@@ -1,0 +1,130 @@
+<ImportExportXml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" OrganizationVersion="9.2.26103.175" OrganizationSchemaType="Standard" CRMServerServiceabilityVersion="9.2.26103.00175">
+  <Entities></Entities>
+  <Roles></Roles>
+  <Workflows>
+    <Workflow WorkflowId="{b3527ad8-b7e7-f111-84e9-6045bd004860}" Name="PMO Status Report">
+      <JsonFileName>/Workflows/PMOStatusReport-B3527AD8-B7E7-F111-84E9-6045BD004860.json</JsonFileName>
+      <Type>1</Type>
+      <Subprocess>0</Subprocess>
+      <Category>5</Category>
+      <Mode>0</Mode>
+      <Scope>4</Scope>
+      <OnDemand>0</OnDemand>
+      <TriggerOnCreate>0</TriggerOnCreate>
+      <TriggerOnDelete>0</TriggerOnDelete>
+      <AsyncAutodelete>0</AsyncAutodelete>
+      <SyncWorkflowLogOnFailure>0</SyncWorkflowLogOnFailure>
+      <StateCode>1</StateCode>
+      <StatusCode>2</StatusCode>
+      <RunAs>1</RunAs>
+      <IsTransacted>1</IsTransacted>
+      <IntroducedVersion>1.0.0.0</IntroducedVersion>
+      <IsCustomizable>1</IsCustomizable>
+      <BusinessProcessType>0</BusinessProcessType>
+      <IsCustomProcessingStepAllowedForOtherPublishers>1</IsCustomProcessingStepAllowedForOtherPublishers>
+      <ModernFlowType>0</ModernFlowType>
+      <PrimaryEntity>none</PrimaryEntity>
+      <LocalizedNames>
+        <LocalizedName languagecode="1033" description="PMO Status Report" />
+      </LocalizedNames>
+    </Workflow>
+    <Workflow WorkflowId="{b4527ad8-b7e7-f111-84e9-6045bd004860}" Name="PMO Weekly Update Reminder">
+      <JsonFileName>/Workflows/PMOWeeklyUpdateReminder-B4527AD8-B7E7-F111-84E9-6045BD004860.json</JsonFileName>
+      <Type>1</Type>
+      <Subprocess>0</Subprocess>
+      <Category>5</Category>
+      <Mode>0</Mode>
+      <Scope>4</Scope>
+      <OnDemand>0</OnDemand>
+      <TriggerOnCreate>0</TriggerOnCreate>
+      <TriggerOnDelete>0</TriggerOnDelete>
+      <AsyncAutodelete>0</AsyncAutodelete>
+      <SyncWorkflowLogOnFailure>0</SyncWorkflowLogOnFailure>
+      <StateCode>1</StateCode>
+      <StatusCode>2</StatusCode>
+      <RunAs>1</RunAs>
+      <IsTransacted>1</IsTransacted>
+      <IntroducedVersion>1.0.0.0</IntroducedVersion>
+      <IsCustomizable>1</IsCustomizable>
+      <BusinessProcessType>0</BusinessProcessType>
+      <IsCustomProcessingStepAllowedForOtherPublishers>1</IsCustomProcessingStepAllowedForOtherPublishers>
+      <ModernFlowType>0</ModernFlowType>
+      <PrimaryEntity>none</PrimaryEntity>
+      <LocalizedNames>
+        <LocalizedName languagecode="1033" description="PMO Weekly Update Reminder" />
+      </LocalizedNames>
+    </Workflow>
+  </Workflows>
+  <FieldSecurityProfiles></FieldSecurityProfiles>
+  <Templates />
+  <EntityMaps />
+  <EntityRelationships />
+  <OrganizationSettings />
+  <optionsets />
+  <CustomControls />
+  <EntityDataProviders />
+  <CanvasApps>
+    <CanvasApp>
+      <Name>cr1da_pmoprojecthub_7c18c</Name>
+      <AppVersion>2026-11-24T04:02:38Z</AppVersion>
+      <Status>Ready</Status>
+      <CreatedByClientVersion>3.26103.35.0</CreatedByClientVersion>
+      <MinClientVersion>3.26103.35.0</MinClientVersion>
+      <Tags>{"primaryDeviceWidth":"1366","primaryDeviceHeight":"768","supportsPortrait":"true","supportsLandscape":"true","primaryFormFactor":"Tablet","showStatusBar":"false","publisherVersion":"3.26103.35","minimumRequiredApiVersion":"2.2.0","hasComponent":"false","hasUnlockedComponent":"false","isUnifiedRootApp":"false","m365CopilotSettingValue":"0"}</Tags>
+      <IsCdsUpgraded>0</IsCdsUpgraded>
+      <GalleryItemId xsi:nil="true"></GalleryItemId>
+      <BackgroundColor>RGBA(0,176,240,1)</BackgroundColor>
+      <DisplayName>PMO Project Hub</DisplayName>
+      <Description>One place to track every improvement project at the facility. Project managers post a 2-minute weekly status update, and leaders see portfolio health, schedule slips, risks, and progress toward each project's target metric. Built on SharePoint with Power Automate reminders and Teams integration. Demo with fictitious data.</Description>
+      <CommitMessage></CommitMessage>
+      <Publisher></Publisher>
+      <AuthorizationReferences>[]</AuthorizationReferences>
+      <ConnectionReferences>{"ba74e765-022a-4629-9701-5d873fab6d0b":{"id":"/providers/microsoft.powerapps/apis/shared_sharepointonline","displayName":"SharePoint","iconUri":"https://static.powerapps.com/resource/ppcr/releases/v1.0.1834/1.0.1834.5089/sharepointonline/icon.png","dataSources":["Projects","Milestones","StatusUpdates","Risks","ActionItems","PMOTeam"],"dependencies":[],"dependents":[],"parameterHints":{},"parameterHintsV2":{},"isOnPremiseConnection":false,"bypassConsent":false,"dataSets":{"https://contoso.sharepoint.com/sites/SystemsRedesignDemo_cr1da_shared_sharepointonline_4e5a20f515ef4ca59a39c23a7c9567be":{"datasetOverride":{"name":"https://contoso.sharepoint.com/sites/SystemsRedesignDemo","environmentVariableName":"cr1da_shared_sharepointonline_4e5a20f515ef4ca59a39c23a7c9567be"},"dataSources":{"Projects":{"tableName":"8085c073-810e-4211-9a9c-ca685a249def","tableNameOverride":{"environmentVariableName":"cr1da_shared_sharepointonline_761cb9eb80924b6383ecbc58124e24f8"}},"Milestones":{"tableName":"4e2a767c-d3a8-4be7-b8a6-1cf564a5425a","tableNameOverride":{"environmentVariableName":"cr1da_shared_sharepointonline_f3baecfc67f64ddc908933b55a389880"}},"StatusUpdates":{"tableName":"599d9ad7-25ce-4a27-82df-19581bfd543c","tableNameOverride":{"environmentVariableName":"cr1da_shared_sharepointonline_04be591bba4e4193a30830d2935c88ae"}},"Risks":{"tableName":"5c16eed3-1a7a-4f8f-91c7-3b4ecdfbc553","tableNameOverride":{"environmentVariableName":"cr1da_shared_sharepointonline_a0be19ea55f44b488b981f6d78ae340a"}},"ActionItems":{"tableName":"21487070-0ede-4f95-8c7a-694b4bbe5b09","tableNameOverride":{"environmentVariableName":"cr1da_shared_sharepointonline_3daaa02950334600a8f845406afcc2f8"}},"PMOTeam":{"tableName":"c90e6db4-6337-4275-9dd3-644e233008c0","tableNameOverride":{"environmentVariableName":"cr1da_shared_sharepointonline_e2cb0412a99a48878629bc3f08c51a21"}}}}},"apiTier":"Standard"}}</ConnectionReferences>
+      <DatabaseReferences>{}</DatabaseReferences>
+      <AppComponents>[]</AppComponents>
+      <AppComponentDependencies>[]</AppComponentDependencies>
+      <CanConsumeAppPass>1</CanConsumeAppPass>
+      <CanvasAppType>0</CanvasAppType>
+      <BypassConsent>0</BypassConsent>
+      <AdminControlBypassConsent>0</AdminControlBypassConsent>
+      <EmbeddedApp xsi:nil="true"></EmbeddedApp>
+      <IntroducedVersion>1.0</IntroducedVersion>
+      <CdsDependencies>{"cdsdependencies":[{"componenttype":380,"logicalname":"cr1da_shared_sharepointonline_4e5a20f515ef4ca59a39c23a7c9567be","componenttypeplatformname":"EnvironmentVariableDefinition"},{"componenttype":380,"logicalname":"cr1da_shared_sharepointonline_761cb9eb80924b6383ecbc58124e24f8","componenttypeplatformname":"EnvironmentVariableDefinition"},{"componenttype":380,"logicalname":"cr1da_shared_sharepointonline_f3baecfc67f64ddc908933b55a389880","componenttypeplatformname":"EnvironmentVariableDefinition"},{"componenttype":380,"logicalname":"cr1da_shared_sharepointonline_04be591bba4e4193a30830d2935c88ae","componenttypeplatformname":"EnvironmentVariableDefinition"},{"componenttype":380,"logicalname":"cr1da_shared_sharepointonline_a0be19ea55f44b488b981f6d78ae340a","componenttypeplatformname":"EnvironmentVariableDefinition"},{"componenttype":380,"logicalname":"cr1da_shared_sharepointonline_3daaa02950334600a8f845406afcc2f8","componenttypeplatformname":"EnvironmentVariableDefinition"},{"componenttype":380,"logicalname":"cr1da_shared_sharepointonline_e2cb0412a99a48878629bc3f08c51a21","componenttypeplatformname":"EnvironmentVariableDefinition"}]}</CdsDependencies>
+      <IsCustomizable>1</IsCustomizable>
+      <BackgroundImageUri>/CanvasApps/cr1da_pmoprojecthub_7c18c_BackgroundImageUri</BackgroundImageUri>
+      <DocumentUri>/CanvasApps/cr1da_pmoprojecthub_7c18c_DocumentUri.msapp</DocumentUri>
+      <AdditionalUris>
+        <AdditionalUri>/CanvasApps/cr1da_pmoprojecthub_7c18c_AdditionalUris0_identity.json</AdditionalUri>
+      </AdditionalUris>
+    </CanvasApp>
+  </CanvasApps>
+  <connectionreferences>
+    <connectionreference connectionreferencelogicalname="kr_sharedonedriveforbusiness_a3d82">
+      <connectionreferencedisplayname>OneDrive for Business PMO_Project_Hub-a3d82</connectionreferencedisplayname>
+      <connectorid>/providers/Microsoft.PowerApps/apis/shared_onedriveforbusiness</connectorid>
+      <iscustomizable>1</iscustomizable>
+      <promptingbehavior>0</promptingbehavior>
+      <statecode>0</statecode>
+      <statuscode>1</statuscode>
+    </connectionreference>
+    <connectionreference connectionreferencelogicalname="kr_sharedsharepointonline_b8320">
+      <connectionreferencedisplayname>SharePoint PMO_Project_Hub-b8320</connectionreferencedisplayname>
+      <connectorid>/providers/Microsoft.PowerApps/apis/shared_sharepointonline</connectorid>
+      <iscustomizable>1</iscustomizable>
+      <promptingbehavior>0</promptingbehavior>
+      <statecode>0</statecode>
+      <statuscode>1</statuscode>
+    </connectionreference>
+    <connectionreference connectionreferencelogicalname="kr_sharedteams_9c71c">
+      <connectionreferencedisplayname>Microsoft Teams PMO_Project_Hub-9c71c</connectionreferencedisplayname>
+      <connectorid>/providers/Microsoft.PowerApps/apis/shared_teams</connectorid>
+      <iscustomizable>1</iscustomizable>
+      <promptingbehavior>0</promptingbehavior>
+      <statecode>0</statecode>
+      <statuscode>1</statuscode>
+    </connectionreference>
+  </connectionreferences>
+  <Languages>
+    <Language>1033</Language>
+  </Languages>
+</ImportExportXml>

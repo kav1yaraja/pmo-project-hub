@@ -1,0 +1,7 @@
+EditorState:
+  ScreensOrder:
+    - scrPortfolio
+    - scrProject
+    - scrUpdate
+    - scrAnalytics
+    - scrMyWork

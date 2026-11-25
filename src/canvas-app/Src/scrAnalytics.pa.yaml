@@ -1,0 +1,469 @@
+Screens:
+  scrAnalytics:
+    Properties:
+      Fill: =nfMuted
+      OnVisible: |-
+        =ClearCollect(colAllUpdates, StatusUpdates);
+        ClearCollect(colAllRisks, Filter(Risks, Status = "Open" || Status = "Mitigated"));
+        ClearCollect(colProjects, Filter(Projects, IsActive = true));
+        ClearCollect(colMilestones, Milestones);
+        ClearCollect(
+            colTrend,
+            AddColumns(
+                Sort(Distinct(colAllUpdates, WeekOf), Value) As w,
+                Week, Text(w.Value, "mmm d"),
+                G, CountIf(colAllUpdates, WeekOf = w.Value && Health = "Green"),
+                Y, CountIf(colAllUpdates, WeekOf = w.Value && Health = "Yellow"),
+                R, CountIf(colAllUpdates, WeekOf = w.Value && Health = "Red")
+            )
+        );
+        Set(varTrendMax, Max(1, Max(colTrend, G + Y + R)));
+        ClearCollect(
+            colSlip,
+            AddColumns(
+                colProjects As pr,
+                Slip, Coalesce(Max(Filter(colMilestones, ProjectID = pr.ID), SlipDays(PlannedDate, Coalesce(ActualDate, ForecastDate))), 0),
+                Progress, MetricProgress(pr.MetricBaseline, pr.MetricTarget, pr.MetricCurrent)
+            )
+        );
+        Set(varGStart, Min(colProjects, StartDate));
+        Set(varGEnd, Max(colProjects, TargetEndDate))
+    Children:
+      - aHdrBar:
+          Control: Rectangle@2.3.0
+          Properties:
+            X: =0
+            Y: =0
+            Width: =Parent.Width
+            Height: =64
+            Fill: =nfNavy
+            BorderColor: =RGBA(0,0,0,0)
+      - aHdrTitle:
+          Control: Label@2.5.1
+          Properties:
+            Text: ="PMO Project Hub"
+            X: =24
+            Y: =0
+            Width: =300
+            Height: =64
+            Size: =20
+            Color: =Color.White
+            Font: =Font.'Segoe UI'
+            FontWeight: =FontWeight.Semibold
+      - aHdrPMO:
+          Control: Label@2.5.1
+          Properties:
+            Text: =If(nfIsPMO, "PMO admin", "")
+            X: =330
+            Y: =20
+            Width: =100
+            Height: =24
+            Size: =11
+            Color: =nfBaseDarkest
+            Font: =Font.'Segoe UI'
+            Fill: =If(nfIsPMO, nfInfoBg, RGBA(0,0,0,0))
+            Align: =Align.Center
+      - aNavPortfolio:
+          Control: Classic/Button@2.2.0
+          Properties:
+            Text: ="Portfolio"
+            X: =Parent.Width - 560
+            Y: =12
+            Width: =120
+            Height: =40
+            OnSelect: =Navigate(scrPortfolio, ScreenTransition.None)
+            Size: =13
+            FontWeight: =FontWeight.Semibold
+            Font: =Font.'Segoe UI'
+            RadiusTopLeft: =4
+            RadiusTopRight: =4
+            RadiusBottomLeft: =4
+            RadiusBottomRight: =4
+            FocusedBorderThickness: =3
+            FocusedBorderColor: =nfBaseDarkest
+            Fill: =If(App.ActiveScreen = scrPortfolio, nfBlue, RGBA(0,0,0,0))
+            Color: =Color.White
+            HoverFill: =nfBlue
+            PressedFill: =nfNavy
+            BorderColor: =RGBA(0,0,0,0)
+            DisabledFill: =nfBaseLighter
+            DisabledColor: =nfBaseMedium
+      - aNavAnalytics:
+          Control: Classic/Button@2.2.0
+          Properties:
+            Text: ="Analytics"
+            X: =Parent.Width - 430
+            Y: =12
+            Width: =120
+            Height: =40
+            OnSelect: =Navigate(scrAnalytics, ScreenTransition.None)
+            Size: =13
+            FontWeight: =FontWeight.Semibold
+            Font: =Font.'Segoe UI'
+            RadiusTopLeft: =4
+            RadiusTopRight: =4
+            RadiusBottomLeft: =4
+            RadiusBottomRight: =4
+            FocusedBorderThickness: =3
+            FocusedBorderColor: =nfBaseDarkest
+            Fill: =If(App.ActiveScreen = scrAnalytics, nfBlue, RGBA(0,0,0,0))
+            Color: =Color.White
+            HoverFill: =nfBlue
+            PressedFill: =nfNavy
+            BorderColor: =RGBA(0,0,0,0)
+            DisabledFill: =nfBaseLighter
+            DisabledColor: =nfBaseMedium
+      - aNavMyWork:
+          Control: Classic/Button@2.2.0
+          Properties:
+            Text: ="My work"
+            X: =Parent.Width - 300
+            Y: =12
+            Width: =120
+            Height: =40
+            OnSelect: =Navigate(scrMyWork, ScreenTransition.None)
+            Size: =13
+            FontWeight: =FontWeight.Semibold
+            Font: =Font.'Segoe UI'
+            RadiusTopLeft: =4
+            RadiusTopRight: =4
+            RadiusBottomLeft: =4
+            RadiusBottomRight: =4
+            FocusedBorderThickness: =3
+            FocusedBorderColor: =nfBaseDarkest
+            Fill: =If(App.ActiveScreen = scrMyWork, nfBlue, RGBA(0,0,0,0))
+            Color: =Color.White
+            HoverFill: =nfBlue
+            PressedFill: =nfNavy
+            BorderColor: =RGBA(0,0,0,0)
+            DisabledFill: =nfBaseLighter
+            DisabledColor: =nfBaseMedium
+      - aHdrDemo:
+          Control: Label@2.5.1
+          Properties:
+            Text: ="Demo · fictitious data"
+            X: =Parent.Width - 170
+            Y: =0
+            Width: =150
+            Height: =64
+            Size: =11
+            Color: =nfAmber
+            Font: =Font.'Segoe UI'
+            Align: =Align.Right
+      - lblInsight:
+          Control: Label@2.5.1
+          Properties:
+            Text: |-
+              =CountIf(colProjects, CurrentHealth = "Green") & " of " & CountRows(colProjects) & " active projects are on track. " &
+              "Furthest behind: " & First(Sort(colSlip, Slip, SortOrder.Descending)).ProjectCode &
+              " (+" & First(Sort(colSlip, Slip, SortOrder.Descending)).Slip & " days). " &
+              CountRows(Filter(colAllRisks, RiskScore >= 15)) & " open high risks."
+            X: =24
+            Y: =76
+            Width: =Parent.Width - 48
+            Height: =52
+            Size: =17
+            Color: =nfBaseDarkest
+            Font: =Font.'Segoe UI'
+            FontWeight: =FontWeight.Semibold
+            Fill: =nfInfoBg
+            PaddingLeft: =16
+      - pnlTrend:
+          Control: Rectangle@2.3.0
+          Properties:
+            X: =24
+            Y: =140
+            Width: =(Parent.Width - 64) / 2
+            Height: =(Parent.Height - 140 - 32) / 2
+            Fill: =nfPage
+            BorderColor: =nfBaseLighter
+            BorderThickness: =1
+      - lblTrendTitle:
+          Control: Label@2.5.1
+          Properties:
+            Text: ="Portfolio health, last " & CountRows(colTrend) & " weeks"
+            X: =40
+            Y: =148
+            Width: =(Parent.Width - 64) / 2 - 32
+            Height: =26
+            Size: =14
+            Color: =nfBaseDarkest
+            Font: =Font.'Segoe UI'
+            FontWeight: =FontWeight.Semibold
+      - lblTrendKey:
+          Control: Label@2.5.1
+          Properties:
+            Text: |-
+              ="Stacked: green (bottom), yellow, red = projects reporting each week"
+            X: =40
+            Y: =172
+            Width: =(Parent.Width - 64) / 2 - 32
+            Height: =20
+            Size: =11
+            Color: =nfBaseMedium
+            Font: =Font.'Segoe UI'
+      - galTrend:
+          Control: Gallery@2.15.0
+          Variant: Horizontal
+          Properties:
+            Items: =colTrend
+            X: =40
+            Y: =196
+            Width: =(Parent.Width - 64) / 2 - 32
+            Height: =(Parent.Height - 140 - 32) / 2 - 64
+            TemplateSize: =64
+            TemplatePadding: =0
+            BorderColor: =RGBA(0,0,0,0)
+            AccessibleLabel: ="Weekly portfolio health trend"
+          Children:
+            - trG:
+                Control: Rectangle@2.3.0
+                Properties:
+                  X: =12
+                  Y: =Parent.TemplateHeight - 24 - Self.Height
+                  Width: =40
+                  Height: =(Parent.TemplateHeight - 44) * ThisItem.G / Max(1, varTrendMax)
+                  Fill: =nfGreen
+                  BorderColor: =RGBA(0,0,0,0)
+            - trY:
+                Control: Rectangle@2.3.0
+                Properties:
+                  X: =12
+                  Y: =trG.Y - Self.Height
+                  Width: =40
+                  Height: =(Parent.TemplateHeight - 44) * ThisItem.Y / Max(1, varTrendMax)
+                  Fill: =nfAmber
+                  BorderColor: =RGBA(0,0,0,0)
+            - trR:
+                Control: Rectangle@2.3.0
+                Properties:
+                  X: =12
+                  Y: =trY.Y - Self.Height
+                  Width: =40
+                  Height: =(Parent.TemplateHeight - 44) * ThisItem.R / Max(1, varTrendMax)
+                  Fill: =nfRed
+                  BorderColor: =RGBA(0,0,0,0)
+            - trWeek:
+                Control: Label@2.5.1
+                Properties:
+                  Text: =ThisItem.Week
+                  X: =0
+                  Y: =Parent.TemplateHeight - 22
+                  Width: =64
+                  Height: =20
+                  Size: =10
+                  Color: =nfBaseMedium
+                  Font: =Font.'Segoe UI'
+                  Align: =Align.Center
+      - pnlProgress:
+          Control: Rectangle@2.3.0
+          Properties:
+            X: =40 + (Parent.Width - 64) / 2
+            Y: =140
+            Width: =(Parent.Width - 64) / 2
+            Height: =(Parent.Height - 140 - 32) / 2
+            Fill: =nfPage
+            BorderColor: =nfBaseLighter
+            BorderThickness: =1
+      - lblProgTitle:
+          Control: Label@2.5.1
+          Properties:
+            Text: ="Progress to target metric"
+            X: =40 + (Parent.Width - 64) / 2 + 16
+            Y: =148
+            Width: =(Parent.Width - 64) / 2 - 32
+            Height: =26
+            Size: =14
+            Color: =nfBaseDarkest
+            Font: =Font.'Segoe UI'
+            FontWeight: =FontWeight.Semibold
+      - galProgress:
+          Control: Gallery@2.15.0
+          Variant: Vertical
+          Properties:
+            Items: =Sort(colSlip, Progress, SortOrder.Descending)
+            X: =40 + (Parent.Width - 64) / 2 + 16
+            Y: =178
+            Width: =(Parent.Width - 64) / 2 - 32
+            Height: =(Parent.Height - 140 - 32) / 2 - 46
+            TemplateSize: =30
+            TemplatePadding: =0
+            BorderColor: =RGBA(0,0,0,0)
+            AccessibleLabel: ="Progress to target by project"
+          Children:
+            - pgCode:
+                Control: Label@2.5.1
+                Properties:
+                  Text: =ThisItem.ProjectCode
+                  X: =0
+                  Y: =2
+                  Width: =80
+                  Height: =26
+                  Size: =12
+                  Color: =nfBaseDarker
+                  Font: =Font.'Segoe UI'
+                  FontWeight: =FontWeight.Semibold
+            - pgBg:
+                Control: Rectangle@2.3.0
+                Properties:
+                  X: =84
+                  Y: =10
+                  Width: =Parent.TemplateWidth - 150
+                  Height: =10
+                  Fill: =nfBaseLighter
+                  BorderColor: =RGBA(0,0,0,0)
+            - pgBar:
+                Control: Rectangle@2.3.0
+                Properties:
+                  X: =84
+                  Y: =10
+                  Width: =(Parent.TemplateWidth - 150) * ThisItem.Progress
+                  Height: =10
+                  Fill: =HealthColor(ThisItem.CurrentHealth)
+                  BorderColor: =RGBA(0,0,0,0)
+            - pgPct:
+                Control: Label@2.5.1
+                Properties:
+                  Text: =Pct(ThisItem.Progress)
+                  X: =Parent.TemplateWidth - 60
+                  Y: =2
+                  Width: =60
+                  Height: =26
+                  Size: =12
+                  Color: =nfBaseDarker
+                  Font: =Font.'Segoe UI'
+                  Align: =Align.Right
+      - pnlSlip:
+          Control: Rectangle@2.3.0
+          Properties:
+            X: =24
+            Y: =140 + (Parent.Height - 140 - 32) / 2 + 16
+            Width: =(Parent.Width - 64) / 2
+            Height: =(Parent.Height - 140 - 32) / 2
+            Fill: =nfPage
+            BorderColor: =nfBaseLighter
+            BorderThickness: =1
+      - lblSlipTitle:
+          Control: Label@2.5.1
+          Properties:
+            Text: ="Schedule slip (worst milestone per project)"
+            X: =40
+            Y: =140 + (Parent.Height - 140 - 32) / 2 + 16 + 8
+            Width: =(Parent.Width - 64) / 2 - 32
+            Height: =26
+            Size: =14
+            Color: =nfBaseDarkest
+            Font: =Font.'Segoe UI'
+            FontWeight: =FontWeight.Semibold
+      - galSlip:
+          Control: Gallery@2.15.0
+          Variant: Vertical
+          Properties:
+            Items: =Sort(colSlip, Slip, SortOrder.Descending)
+            X: =40
+            Y: =140 + (Parent.Height - 140 - 32) / 2 + 16 + 38
+            Width: =(Parent.Width - 64) / 2 - 32
+            Height: =(Parent.Height - 140 - 32) / 2 - 46
+            TemplateSize: =30
+            TemplatePadding: =0
+            BorderColor: =RGBA(0,0,0,0)
+            AccessibleLabel: ="Schedule slip by project"
+          Children:
+            - slCode:
+                Control: Label@2.5.1
+                Properties:
+                  Text: =ThisItem.ProjectCode
+                  X: =0
+                  Y: =2
+                  Width: =80
+                  Height: =26
+                  Size: =12
+                  Color: =nfBaseDarker
+                  Font: =Font.'Segoe UI'
+                  FontWeight: =FontWeight.Semibold
+            - slBar:
+                Control: Rectangle@2.3.0
+                Properties:
+                  X: =84
+                  Y: =9
+                  Width: =Min(Parent.TemplateWidth - 220, 8 * Max(0, ThisItem.Slip))
+                  Height: =12
+                  Fill: =If(ThisItem.Slip > 7, nfRed, ThisItem.Slip > 0, nfAmber, nfGreen)
+                  BorderColor: =RGBA(0,0,0,0)
+            - slTxt:
+                Control: Label@2.5.1
+                Properties:
+                  Text: =If(ThisItem.Slip > 0, "+" & ThisItem.Slip & " days", "On schedule")
+                  X: =92 + Min(Parent.TemplateWidth - 220, 8 * Max(0, ThisItem.Slip))
+                  Y: =2
+                  Width: =120
+                  Height: =26
+                  Size: =12
+                  Color: =nfBaseDarker
+                  Font: =Font.'Segoe UI'
+      - pnlGantt:
+          Control: Rectangle@2.3.0
+          Properties:
+            X: =40 + (Parent.Width - 64) / 2
+            Y: =140 + (Parent.Height - 140 - 32) / 2 + 16
+            Width: =(Parent.Width - 64) / 2
+            Height: =(Parent.Height - 140 - 32) / 2
+            Fill: =nfPage
+            BorderColor: =nfBaseLighter
+            BorderThickness: =1
+      - lblGanttTitle:
+          Control: Label@2.5.1
+          Properties:
+            Text: ="Portfolio timeline (dark line = today)"
+            X: =40 + (Parent.Width - 64) / 2 + 16
+            Y: =140 + (Parent.Height - 140 - 32) / 2 + 16 + 8
+            Width: =(Parent.Width - 64) / 2 - 32
+            Height: =26
+            Size: =14
+            Color: =nfBaseDarkest
+            Font: =Font.'Segoe UI'
+            FontWeight: =FontWeight.Semibold
+      - galGantt:
+          Control: Gallery@2.15.0
+          Variant: Vertical
+          Properties:
+            Items: =Sort(colProjects, StartDate)
+            X: =40 + (Parent.Width - 64) / 2 + 16
+            Y: =140 + (Parent.Height - 140 - 32) / 2 + 16 + 38
+            Width: =(Parent.Width - 64) / 2 - 32
+            Height: =(Parent.Height - 140 - 32) / 2 - 46
+            TemplateSize: =30
+            TemplatePadding: =0
+            BorderColor: =RGBA(0,0,0,0)
+            AccessibleLabel: ="Portfolio timeline"
+          Children:
+            - gnCode:
+                Control: Label@2.5.1
+                Properties:
+                  Text: =ThisItem.ProjectCode
+                  X: =0
+                  Y: =2
+                  Width: =90
+                  Height: =26
+                  Size: =12
+                  Color: =nfBaseDarker
+                  Font: =Font.'Segoe UI'
+                  FontWeight: =FontWeight.Semibold
+            - gnBar:
+                Control: Rectangle@2.3.0
+                Properties:
+                  X: =100 + (Parent.TemplateWidth - 120) * DateDiff(varGStart, ThisItem.StartDate) / Max(1, DateDiff(varGStart, varGEnd))
+                  Y: =7
+                  Width: =(Parent.TemplateWidth - 120) * DateDiff(ThisItem.StartDate, ThisItem.TargetEndDate) / Max(1, DateDiff(varGStart, varGEnd))
+                  Height: =16
+                  Fill: =ColorFade(HealthColor(ThisItem.CurrentHealth), 0.3)
+                  BorderColor: =RGBA(0,0,0,0)
+      - gnToday:
+          Control: Rectangle@2.3.0
+          Properties:
+            X: =galGantt.X + 100 + (galGantt.Width - 120) * DateDiff(varGStart, Today()) / Max(1, DateDiff(varGStart, varGEnd))
+            Y: =galGantt.Y
+            Width: =2
+            Height: =galGantt.Height
+            Fill: =nfNavy
+            BorderColor: =RGBA(0,0,0,0)

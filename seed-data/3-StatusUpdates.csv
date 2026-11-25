@@ -1,0 +1,62 @@
+Title,ProjectID,WeekOf,Health,PercentComplete,MetricValue,Accomplishments,NextSteps,Blockers,SubmittedBy
+PRJ-101 week of 9/28/2026,1,9/28/2026,Green,36,36.2,Planned work on track for the week.,Continue the current plan.,,Kaviya Raja
+PRJ-101 week of 10/5/2026,1,10/5/2026,Green,38,34.5,Planned work on track for the week.,Continue the current plan.,,Kaviya Raja
+PRJ-101 week of 10/12/2026,1,10/12/2026,Green,41,32.8,Planned work on track for the week.,Continue the current plan.,,Kaviya Raja
+PRJ-101 week of 10/19/2026,1,10/19/2026,Green,44,31.0,Planned work on track for the week.,Continue the current plan.,,Kaviya Raja
+PRJ-101 week of 10/26/2026,1,10/26/2026,Yellow,47,29.2,Planned work on track for the week.,Continue the current plan.,Lunch coverage depends on two part-time pharmacists.,Kaviya Raja
+PRJ-101 week of 11/2/2026,1,11/2/2026,Yellow,50,27.5,Planned work on track for the week.,Continue the current plan.,Lunch coverage depends on two part-time pharmacists.,Kaviya Raja
+PRJ-101 week of 11/9/2026,1,11/9/2026,Yellow,52,25.8,Planned work on track for the week.,Continue the current plan.,Lunch coverage depends on two part-time pharmacists.,Kaviya Raja
+PRJ-101 week of 11/16/2026,1,11/16/2026,Yellow,55,24.0,Staggered lunch coverage live Mon-Wed; median wait down to 24 min.,Add Thu/Fri coverage; finalize VEText text-when-ready wording.,Lunch coverage depends on two part-time pharmacists.,Kaviya Raja
+PRJ-102 week of 9/28/2026,2,9/28/2026,Green,36,17.2,Planned work on track for the week.,Continue the current plan.,,Priya Natarajan
+PRJ-102 week of 10/5/2026,2,10/5/2026,Green,38,16.5,Planned work on track for the week.,Continue the current plan.,,Priya Natarajan
+PRJ-102 week of 10/12/2026,2,10/12/2026,Green,41,15.8,Planned work on track for the week.,Continue the current plan.,,Priya Natarajan
+PRJ-102 week of 10/19/2026,2,10/19/2026,Green,44,15.0,Planned work on track for the week.,Continue the current plan.,,Priya Natarajan
+PRJ-102 week of 10/26/2026,2,10/26/2026,Green,47,14.2,Planned work on track for the week.,Continue the current plan.,,Priya Natarajan
+PRJ-102 week of 11/2/2026,2,11/2/2026,Green,50,13.5,Planned work on track for the week.,Continue the current plan.,,Priya Natarajan
+PRJ-102 week of 11/9/2026,2,11/9/2026,Green,52,12.8,Planned work on track for the week.,Continue the current plan.,,Priya Natarajan
+PRJ-102 week of 11/16/2026,2,11/16/2026,Green,55,12.0,72-hour reminders live in all clinics; no-show rate 12%.,Add a reschedule link to the reminder text.,,Priya Natarajan
+PRJ-103 week of 9/28/2026,3,9/28/2026,Yellow,36,197.8,Planned work on track for the week.,Continue the current plan.,Two scheduler vacancies and too few local specialists.,Taylor Brooks
+PRJ-103 week of 10/5/2026,3,10/5/2026,Yellow,38,185.5,Planned work on track for the week.,Continue the current plan.,Two scheduler vacancies and too few local specialists.,Taylor Brooks
+PRJ-103 week of 10/12/2026,3,10/12/2026,Yellow,41,173.2,Planned work on track for the week.,Continue the current plan.,Two scheduler vacancies and too few local specialists.,Taylor Brooks
+PRJ-103 week of 10/19/2026,3,10/19/2026,Red,44,161.0,Planned work on track for the week.,Continue the current plan.,Two scheduler vacancies and too few local specialists.,Taylor Brooks
+PRJ-103 week of 10/26/2026,3,10/26/2026,Red,47,148.8,Planned work on track for the week.,Continue the current plan.,Two scheduler vacancies and too few local specialists.,Taylor Brooks
+PRJ-103 week of 11/2/2026,3,11/2/2026,Red,50,136.5,Planned work on track for the week.,Continue the current plan.,Two scheduler vacancies and too few local specialists.,Taylor Brooks
+PRJ-103 week of 11/9/2026,3,11/9/2026,Yellow,52,124.2,Planned work on track for the week.,Continue the current plan.,Two scheduler vacancies and too few local specialists.,Taylor Brooks
+PRJ-103 week of 11/16/2026,3,11/16/2026,Red,55,112.0,Backlog down to 112; duplicate consults being merged with Analytics.,Fill two scheduler vacancies; send specialist gap list to the VISN.,Two scheduler vacancies and too few local specialists.,Taylor Brooks
+PRJ-104 week of 9/28/2026,4,9/28/2026,Green,36,64.8,Planned work on track for the week.,Continue the current plan.,,Drew Ramirez
+PRJ-104 week of 10/5/2026,4,10/5/2026,Green,38,67.5,Planned work on track for the week.,Continue the current plan.,,Drew Ramirez
+PRJ-104 week of 10/12/2026,4,10/12/2026,Green,41,70.2,Planned work on track for the week.,Continue the current plan.,,Drew Ramirez
+PRJ-104 week of 10/19/2026,4,10/19/2026,Green,44,73.0,Planned work on track for the week.,Continue the current plan.,,Drew Ramirez
+PRJ-104 week of 10/26/2026,4,10/26/2026,Green,47,75.8,Planned work on track for the week.,Continue the current plan.,,Drew Ramirez
+PRJ-104 week of 11/2/2026,4,11/2/2026,Green,50,78.5,Planned work on track for the week.,Continue the current plan.,,Drew Ramirez
+PRJ-104 week of 11/9/2026,4,11/9/2026,Green,52,81.2,Planned work on track for the week.,Continue the current plan.,,Drew Ramirez
+PRJ-104 week of 11/16/2026,4,11/16/2026,Green,55,84.0,Same-day slots protected until 4:30pm Mon-Wed; 84% of requests met.,Extend to Thu-Fri; review November data with MH leads.,,Drew Ramirez
+PRJ-105 week of 10/19/2026,5,10/19/2026,Green,14,21.0,Planned work on track for the week.,Continue the current plan.,,Kaviya Raja
+PRJ-105 week of 10/26/2026,5,10/26/2026,Green,15,22.0,Planned work on track for the week.,Continue the current plan.,,Kaviya Raja
+PRJ-105 week of 11/2/2026,5,11/2/2026,Green,17,23.0,Planned work on track for the week.,Continue the current plan.,,Kaviya Raja
+PRJ-105 week of 11/9/2026,5,11/9/2026,Green,18,24.0,Planned work on track for the week.,Continue the current plan.,,Kaviya Raja
+PRJ-105 week of 11/16/2026,5,11/16/2026,Green,20,25.0,Baseline audit of 20 discharges done; 14 of 18 templates translated.,Send templates to the Patient Education Committee (12/2 review).,,Kaviya Raja
+PRJ-106 week of 9/28/2026,6,9/28/2026,Green,36,62.3,Planned work on track for the week.,Continue the current plan.,,Morgan Lee
+PRJ-106 week of 10/5/2026,6,10/5/2026,Green,39,63.6,Planned work on track for the week.,Continue the current plan.,,Morgan Lee
+PRJ-106 week of 10/12/2026,6,10/12/2026,Yellow,42,64.9,Planned work on track for the week.,Continue the current plan.,Anesthesia staffing at the 7:30 start.,Morgan Lee
+PRJ-106 week of 10/19/2026,6,10/19/2026,Yellow,46,66.1,Planned work on track for the week.,Continue the current plan.,Anesthesia staffing at the 7:30 start.,Morgan Lee
+PRJ-106 week of 10/26/2026,6,10/26/2026,Yellow,49,67.4,Planned work on track for the week.,Continue the current plan.,Anesthesia staffing at the 7:30 start.,Morgan Lee
+PRJ-106 week of 11/2/2026,6,11/2/2026,Yellow,52,68.7,Planned work on track for the week.,Continue the current plan.,Anesthesia staffing at the 7:30 start.,Morgan Lee
+PRJ-106 week of 11/9/2026,6,11/9/2026,Yellow,55,70.0,Tray count check added to SPS workflow; on-time starts 70%.,Present on-time data at surgery M&M; staggered-start proposal.,Anesthesia staffing at the 7:30 start.,Morgan Lee
+PRJ-107 week of 9/28/2026,7,9/28/2026,Green,62,2.7,Planned work on track for the week.,Continue the current plan.,,Quinn Harper
+PRJ-107 week of 10/5/2026,7,10/5/2026,Green,66,2.4,Planned work on track for the week.,Continue the current plan.,,Quinn Harper
+PRJ-107 week of 10/12/2026,7,10/12/2026,Green,71,2.1,Planned work on track for the week.,Continue the current plan.,,Quinn Harper
+PRJ-107 week of 10/19/2026,7,10/19/2026,Green,76,1.8,Planned work on track for the week.,Continue the current plan.,,Quinn Harper
+PRJ-107 week of 10/26/2026,7,10/26/2026,Green,81,1.5,Planned work on track for the week.,Continue the current plan.,,Quinn Harper
+PRJ-107 week of 11/2/2026,7,11/2/2026,Green,86,1.2,Planned work on track for the week.,Continue the current plan.,,Quinn Harper
+PRJ-107 week of 11/9/2026,7,11/9/2026,Green,90,0.9,Planned work on track for the week.,Continue the current plan.,,Quinn Harper
+PRJ-107 week of 11/16/2026,7,11/16/2026,Green,95,0.6,Standby list filled 2.4 of 3 weekly open slots for 6 straight weeks.,Write the sustainment plan; hand off to Imaging.,,Quinn Harper
+PRJ-108 week of 10/5/2026,8,10/5/2026,Green,13,9.0,Planned work on track for the week.,Continue the current plan.,,Kaviya Raja
+PRJ-108 week of 10/12/2026,8,10/12/2026,Green,15,9.0,Planned work on track for the week.,Continue the current plan.,,Kaviya Raja
+PRJ-108 week of 10/19/2026,8,10/19/2026,Green,16,9.0,Planned work on track for the week.,Continue the current plan.,,Kaviya Raja
+PRJ-108 week of 10/26/2026,8,10/26/2026,Green,17,9.0,Planned work on track for the week.,Continue the current plan.,,Kaviya Raja
+PRJ-108 week of 11/2/2026,8,11/2/2026,Green,19,9.0,Planned work on track for the week.,Continue the current plan.,,Kaviya Raja
+PRJ-108 week of 11/9/2026,8,11/9/2026,Green,20,9.0,Collected all six current checklists; drafted the core checklist.,Kickoff with the OIT site lead.,,Kaviya Raja
+PRJ-109 week of 9/28/2026,9,9/28/2026,Green,70,10.7,Planned work on track for the week.,Continue the current plan.,,Casey Morgan
+PRJ-109 week of 10/5/2026,9,10/5/2026,Green,82,7.3,Planned work on track for the week.,Continue the current plan.,,Casey Morgan
+PRJ-109 week of 10/12/2026,9,10/12/2026,Green,95,4.0,Wait under 5 minutes for 8 straight weeks; project closed.,Sustainment check in January.,,Casey Morgan

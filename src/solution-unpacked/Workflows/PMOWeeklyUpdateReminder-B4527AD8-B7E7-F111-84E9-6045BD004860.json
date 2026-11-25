@@ -1,0 +1,236 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_sharepointonline": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "kr_sharedsharepointonline_b8320"
+        },
+        "api": {
+          "name": "shared_sharepointonline"
+        }
+      },
+      "shared_teams": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "kr_sharedteams_9c71c"
+        },
+        "api": {
+          "name": "shared_teams"
+        }
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        }
+      },
+      "triggers": {
+        "Recurrence": {
+          "recurrence": {
+            "frequency": "Week",
+            "interval": 1,
+            "timeZone": "Pacific Standard Time",
+            "startTime": "2026-11-30T09:00:00",
+            "schedule": {
+              "weekDays": [
+                "Monday"
+              ],
+              "hours": [
+                "9"
+              ],
+              "minutes": [
+                0
+              ]
+            }
+          },
+          "evaluatedRecurrence": {
+            "frequency": "Week",
+            "interval": 1,
+            "timeZone": "Pacific Standard Time",
+            "startTime": "2026-11-30T09:00:00",
+            "schedule": {
+              "weekDays": [
+                "Monday"
+              ],
+              "hours": [
+                "9"
+              ],
+              "minutes": [
+                0
+              ]
+            }
+          },
+          "type": "Recurrence"
+        }
+      },
+      "actions": {
+        "Report_week": {
+          "runAfter": {},
+          "type": "Compose",
+          "inputs": "@formatDateTime(addDays(convertFromUtc(utcNow(), 'Pacific Standard Time'), sub(-7, mod(add(dayOfWeek(convertFromUtc(utcNow(), 'Pacific Standard Time')), 6), 7))), 'yyyy-MM-dd')"
+        },
+        "App_link": {
+          "runAfter": {
+            "Report_week": [
+              "Succeeded"
+            ]
+          },
+          "type": "Compose",
+          "inputs": "https://apps.powerapps.com/play/e/e2c446bf-f2c7-ea30-a9fa-186d9566b417/a/3fb3c57a-a192-4e5b-a219-1cb73e980970"
+        },
+        "Get_active_projects": {
+          "runAfter": {
+            "App_link": [
+              "Succeeded"
+            ]
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline",
+              "connectionName": "shared_sharepointonline",
+              "operationId": "GetItems"
+            },
+            "parameters": {
+              "dataset": "https://contoso.sharepoint.com/sites/SystemsRedesignDemo",
+              "table": "8085c073-810e-4211-9a9c-ca685a249def",
+              "$filter": "field_19 eq 1",
+              "$top": 500
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Missing_updates": {
+          "runAfter": {
+            "Get_active_projects": [
+              "Succeeded"
+            ]
+          },
+          "type": "Query",
+          "inputs": {
+            "from": "@outputs('Get_active_projects')?['body/value']",
+            "where": "@or(empty(item()?['field_18']), less(formatDateTime(item()?['field_18'], 'yyyy-MM-dd'), outputs('Report_week')))"
+          }
+        },
+        "For_each_missing_project": {
+          "runAfter": {
+            "Missing_updates": [
+              "Succeeded"
+            ]
+          },
+          "type": "Foreach",
+          "foreach": "@body('Missing_updates')",
+          "actions": {
+            "PM_has_Teams_account": {
+              "runAfter": {},
+              "type": "If",
+              "expression": {
+                "not": {
+                  "contains": [
+                    "@toLower(coalesce(items('For_each_missing_project')?['field_7'], ''))",
+                    "example.org"
+                  ]
+                }
+              },
+              "actions": {
+                "Remind_PM_in_Teams": {
+                  "runAfter": {},
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "host": {
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_teams",
+                      "connectionName": "shared_teams",
+                      "operationId": "PostMessageToConversation"
+                    },
+                    "parameters": {
+                      "poster": "Flow bot",
+                      "location": "Chat with Flow bot",
+                      "body/recipient": "@items('For_each_missing_project')?['field_7']",
+                      "body/messageBody": "<p><b>Weekly update reminder</b></p><p>Hi @{items('For_each_missing_project')?['field_6']}, <b>@{items('For_each_missing_project')?['field_1']} · @{items('For_each_missing_project')?['Title']}</b> doesn't have a status update for the week of @{formatDateTime(outputs('Report_week'), 'MMM d')} yet. It takes about 2 minutes.</p><p><a href=\"@{outputs('App_link')}?screen=update&projectId=@{items('For_each_missing_project')?['ID']}\">Post your update now</a></p>"
+                    },
+                    "authentication": "@parameters('$authentication')"
+                  }
+                }
+              },
+              "else": {
+                "actions": {}
+              }
+            }
+          }
+        },
+        "Digest_lines": {
+          "runAfter": {
+            "For_each_missing_project": [
+              "Succeeded"
+            ]
+          },
+          "type": "Select",
+          "inputs": {
+            "from": "@body('Missing_updates')",
+            "select": "@concat('<li><a href=\"', outputs('App_link'), '?screen=project&projectId=', item()?['ID'], '\">', item()?['field_1'], '</a> ', item()?['Title'], ' (PM: ', item()?['field_6'], ')</li>')"
+          }
+        },
+        "Get_PMO_team": {
+          "runAfter": {
+            "Digest_lines": [
+              "Succeeded"
+            ]
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline",
+              "connectionName": "shared_sharepointonline",
+              "operationId": "GetItems"
+            },
+            "parameters": {
+              "dataset": "https://contoso.sharepoint.com/sites/SystemsRedesignDemo",
+              "table": "c90e6db4-6337-4275-9dd3-644e233008c0"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "For_each_PMO_member": {
+          "runAfter": {
+            "Get_PMO_team": [
+              "Succeeded"
+            ]
+          },
+          "type": "Foreach",
+          "foreach": "@outputs('Get_PMO_team')?['body/value']",
+          "actions": {
+            "Send_PMO_summary": {
+              "runAfter": {},
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_teams",
+                  "connectionName": "shared_teams",
+                  "operationId": "PostMessageToConversation"
+                },
+                "parameters": {
+                  "poster": "Flow bot",
+                  "location": "Chat with Flow bot",
+                  "body/recipient": "@items('For_each_PMO_member')?['Title']",
+                  "body/messageBody": "@{if(greater(length(body('Missing_updates')), 0), concat('<p><b>PMO weekly check</b>: ', string(length(body('Missing_updates'))), ' of ', string(length(outputs('Get_active_projects')?['body/value'])), ' active projects are missing the update for the week of ', formatDateTime(outputs('Report_week'), 'MMM d'), '.</p><ul>', join(body('Digest_lines'), ''), '</ul><p>Project managers with Teams accounts were reminded directly.</p>'), concat('<p><b>PMO weekly check</b>: all ', string(length(outputs('Get_active_projects')?['body/value'])), ' active projects posted their update for the week of ', formatDateTime(outputs('Report_week'), 'MMM d'), '.</p>'))}"
+                },
+                "authentication": "@parameters('$authentication')"
+              }
+            }
+          }
+        }
+      }
+    },
+    "templateName": null
+  },
+  "schemaVersion": "1.0.0.0"
+}

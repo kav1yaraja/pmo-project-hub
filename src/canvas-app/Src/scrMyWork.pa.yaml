@@ -1,0 +1,469 @@
+Screens:
+  scrMyWork:
+    Properties:
+      Fill: =nfMuted
+      OnVisible: =Refresh(ActionItems); Refresh(Projects)
+    Children:
+      - mHdrBar:
+          Control: Rectangle@2.3.0
+          Properties:
+            X: =0
+            Y: =0
+            Width: =Parent.Width
+            Height: =64
+            Fill: =nfNavy
+            BorderColor: =RGBA(0,0,0,0)
+      - mHdrTitle:
+          Control: Label@2.5.1
+          Properties:
+            Text: ="PMO Project Hub"
+            X: =24
+            Y: =0
+            Width: =300
+            Height: =64
+            Size: =20
+            Color: =Color.White
+            Font: =Font.'Segoe UI'
+            FontWeight: =FontWeight.Semibold
+      - mHdrPMO:
+          Control: Label@2.5.1
+          Properties:
+            Text: =If(nfIsPMO, "PMO admin", "")
+            X: =330
+            Y: =20
+            Width: =100
+            Height: =24
+            Size: =11
+            Color: =nfBaseDarkest
+            Font: =Font.'Segoe UI'
+            Fill: =If(nfIsPMO, nfInfoBg, RGBA(0,0,0,0))
+            Align: =Align.Center
+      - mNavPortfolio:
+          Control: Classic/Button@2.2.0
+          Properties:
+            Text: ="Portfolio"
+            X: =Parent.Width - 560
+            Y: =12
+            Width: =120
+            Height: =40
+            OnSelect: =Navigate(scrPortfolio, ScreenTransition.None)
+            Size: =13
+            FontWeight: =FontWeight.Semibold
+            Font: =Font.'Segoe UI'
+            RadiusTopLeft: =4
+            RadiusTopRight: =4
+            RadiusBottomLeft: =4
+            RadiusBottomRight: =4
+            FocusedBorderThickness: =3
+            FocusedBorderColor: =nfBaseDarkest
+            Fill: =If(App.ActiveScreen = scrPortfolio, nfBlue, RGBA(0,0,0,0))
+            Color: =Color.White
+            HoverFill: =nfBlue
+            PressedFill: =nfNavy
+            BorderColor: =RGBA(0,0,0,0)
+            DisabledFill: =nfBaseLighter
+            DisabledColor: =nfBaseMedium
+      - mNavAnalytics:
+          Control: Classic/Button@2.2.0
+          Properties:
+            Text: ="Analytics"
+            X: =Parent.Width - 430
+            Y: =12
+            Width: =120
+            Height: =40
+            OnSelect: =Navigate(scrAnalytics, ScreenTransition.None)
+            Size: =13
+            FontWeight: =FontWeight.Semibold
+            Font: =Font.'Segoe UI'
+            RadiusTopLeft: =4
+            RadiusTopRight: =4
+            RadiusBottomLeft: =4
+            RadiusBottomRight: =4
+            FocusedBorderThickness: =3
+            FocusedBorderColor: =nfBaseDarkest
+            Fill: =If(App.ActiveScreen = scrAnalytics, nfBlue, RGBA(0,0,0,0))
+            Color: =Color.White
+            HoverFill: =nfBlue
+            PressedFill: =nfNavy
+            BorderColor: =RGBA(0,0,0,0)
+            DisabledFill: =nfBaseLighter
+            DisabledColor: =nfBaseMedium
+      - mNavMyWork:
+          Control: Classic/Button@2.2.0
+          Properties:
+            Text: ="My work"
+            X: =Parent.Width - 300
+            Y: =12
+            Width: =120
+            Height: =40
+            OnSelect: =Navigate(scrMyWork, ScreenTransition.None)
+            Size: =13
+            FontWeight: =FontWeight.Semibold
+            Font: =Font.'Segoe UI'
+            RadiusTopLeft: =4
+            RadiusTopRight: =4
+            RadiusBottomLeft: =4
+            RadiusBottomRight: =4
+            FocusedBorderThickness: =3
+            FocusedBorderColor: =nfBaseDarkest
+            Fill: =If(App.ActiveScreen = scrMyWork, nfBlue, RGBA(0,0,0,0))
+            Color: =Color.White
+            HoverFill: =nfBlue
+            PressedFill: =nfNavy
+            BorderColor: =RGBA(0,0,0,0)
+            DisabledFill: =nfBaseLighter
+            DisabledColor: =nfBaseMedium
+      - mHdrDemo:
+          Control: Label@2.5.1
+          Properties:
+            Text: ="Demo · fictitious data"
+            X: =Parent.Width - 170
+            Y: =0
+            Width: =150
+            Height: =64
+            Size: =11
+            Color: =nfAmber
+            Font: =Font.'Segoe UI'
+            Align: =Align.Right
+      - lblMyTitle:
+          Control: Label@2.5.1
+          Properties:
+            Text: ="My work"
+            X: =24
+            Y: =76
+            Width: =400
+            Height: =36
+            Size: =22
+            Color: =nfBaseDarkest
+            Font: =Font.'Segoe UI'
+            FontWeight: =FontWeight.Semibold
+      - lblMySub:
+          Control: Label@2.5.1
+          Properties:
+            Text: ="Projects you manage and actions assigned to you, " & User().FullName
+            X: =24
+            Y: =110
+            Width: =700
+            Height: =24
+            Size: =13
+            Color: =nfBaseMedium
+            Font: =Font.'Segoe UI'
+      - pnlMyProj:
+          Control: Rectangle@2.3.0
+          Properties:
+            X: =24
+            Y: =144
+            Width: =(Parent.Width - 64) / 2
+            Height: =Parent.Height - 160
+            Fill: =nfPage
+            BorderColor: =nfBaseLighter
+            BorderThickness: =1
+      - lblMyProjHead:
+          Control: Label@2.5.1
+          Properties:
+            Text: ="My projects"
+            X: =40
+            Y: =152
+            Width: =(Parent.Width - 64) / 2 - 32
+            Height: =28
+            Size: =15
+            Color: =nfBaseDarkest
+            Font: =Font.'Segoe UI'
+            FontWeight: =FontWeight.Semibold
+      - galMyProj:
+          Control: Gallery@2.15.0
+          Variant: Vertical
+          Properties:
+            Items: =Filter(Projects, PMEmail = nfMe && IsActive = true)
+            X: =40
+            Y: =184
+            Width: =(Parent.Width - 64) / 2 - 32
+            Height: =Parent.Height - 216
+            TemplateSize: =112
+            TemplatePadding: =0
+            BorderColor: =RGBA(0,0,0,0)
+            AccessibleLabel: ="My projects"
+          Children:
+            - mpTitle:
+                Control: Label@2.5.1
+                Properties:
+                  Text: =ThisItem.ProjectCode & " · " & ThisItem.Title
+                  X: =0
+                  Y: =6
+                  Width: =Parent.TemplateWidth - 130
+                  Height: =48
+                  Size: =14
+                  Color: =nfBaseDarkest
+                  Font: =Font.'Segoe UI'
+                  FontWeight: =FontWeight.Semibold
+                  VerticalAlign: =VerticalAlign.Top
+            - mpChip:
+                Control: Label@2.5.1
+                Properties:
+                  Text: =ThisItem.CurrentHealth
+                  X: =Parent.TemplateWidth - 112
+                  Y: =8
+                  Width: =104
+                  Height: =28
+                  Size: =12
+                  Color: =nfBaseDarkest
+                  Font: =Font.'Segoe UI'
+                  FontWeight: =FontWeight.Semibold
+                  Align: =Align.Center
+                  Fill: =HealthBg(ThisItem.CurrentHealth)
+                  BorderColor: =HealthColor(ThisItem.CurrentHealth)
+                  BorderThickness: =2
+            - mpStale:
+                Control: Label@2.5.1
+                Properties:
+                  Text: =If(IsBlank(ThisItem.LastUpdateWeek) || ThisItem.LastUpdateWeek < nfReportWeek, "No update for week of " & Text(nfReportWeek, "mmm d"), "Updated week of " & Text(ThisItem.LastUpdateWeek, "mmm d"))
+                  X: =0
+                  Y: =54
+                  Width: =Parent.TemplateWidth - 300
+                  Height: =24
+                  Size: =12
+                  Color: =If(IsBlank(ThisItem.LastUpdateWeek) || ThisItem.LastUpdateWeek < nfReportWeek, nfRed, nfBaseMedium)
+                  Font: =Font.'Segoe UI'
+            - mpOpen:
+                Control: Classic/Button@2.2.0
+                Properties:
+                  Text: ="Open"
+                  X: =Parent.TemplateWidth - 284
+                  Y: =60
+                  Width: =120
+                  Height: =36
+                  OnSelect: =Set(varProject, ThisItem); Set(varTab, "Overview"); Navigate(scrProject, ScreenTransition.Fade)
+                  Size: =13
+                  FontWeight: =FontWeight.Semibold
+                  Font: =Font.'Segoe UI'
+                  RadiusTopLeft: =4
+                  RadiusTopRight: =4
+                  RadiusBottomLeft: =4
+                  RadiusBottomRight: =4
+                  FocusedBorderThickness: =3
+                  FocusedBorderColor: =nfBaseDarkest
+                  Fill: =nfPage
+                  Color: =nfBlue
+                  HoverFill: =nfInfoBg
+                  PressedFill: =nfInfoBg
+                  HoverColor: =nfNavy
+                  BorderColor: =nfBlue
+                  BorderThickness: =1
+                  DisabledFill: =nfPage
+                  DisabledColor: =nfBaseLight
+            - mpUpdate:
+                Control: Classic/Button@2.2.0
+                Properties:
+                  Text: ="Post update"
+                  X: =Parent.TemplateWidth - 152
+                  Y: =60
+                  Width: =150
+                  Height: =36
+                  OnSelect: =Set(varProject, ThisItem); Navigate(scrUpdate, ScreenTransition.Fade)
+                  Size: =13
+                  FontWeight: =FontWeight.Semibold
+                  Font: =Font.'Segoe UI'
+                  RadiusTopLeft: =4
+                  RadiusTopRight: =4
+                  RadiusBottomLeft: =4
+                  RadiusBottomRight: =4
+                  FocusedBorderThickness: =3
+                  FocusedBorderColor: =nfBaseDarkest
+                  Fill: =nfBlue
+                  Color: =Color.White
+                  HoverFill: =nfNavy
+                  PressedFill: =nfNavy
+                  BorderColor: =nfBlue
+                  DisabledFill: =nfBaseLighter
+                  DisabledColor: =nfBaseMedium
+            - mpSep:
+                Control: Rectangle@2.3.0
+                Properties:
+                  X: =0
+                  Y: =111
+                  Width: =Parent.TemplateWidth
+                  Height: =1
+                  Fill: =nfBaseLighter
+                  BorderColor: =RGBA(0,0,0,0)
+      - pnlMyAct:
+          Control: Rectangle@2.3.0
+          Properties:
+            X: =40 + (Parent.Width - 64) / 2
+            Y: =144
+            Width: =(Parent.Width - 64) / 2
+            Height: =Parent.Height - 160
+            Fill: =nfPage
+            BorderColor: =nfBaseLighter
+            BorderThickness: =1
+      - lblMyActHead:
+          Control: Label@2.5.1
+          Properties:
+            Text: ="My open actions"
+            X: =56 + (Parent.Width - 64) / 2
+            Y: =152
+            Width: =(Parent.Width - 64) / 2 - 32
+            Height: =28
+            Size: =15
+            Color: =nfBaseDarkest
+            Font: =Font.'Segoe UI'
+            FontWeight: =FontWeight.Semibold
+      - galMyActions:
+          Control: Gallery@2.15.0
+          Variant: Vertical
+          Properties:
+            Items: =Sort(Filter(ActionItems, OwnerEmail = nfMe && Status = "Open"), DueDate, SortOrder.Ascending)
+            X: =56 + (Parent.Width - 64) / 2
+            Y: =184
+            Width: =(Parent.Width - 64) / 2 - 32
+            Height: =(Parent.Height - 216) * 0.55
+            TemplateSize: =64
+            TemplatePadding: =0
+            BorderColor: =RGBA(0,0,0,0)
+            AccessibleLabel: ="My open actions"
+          Children:
+            - tglMyDone:
+                Control: Classic/Toggle@2.1.0
+                Properties:
+                  Default: =false
+                  X: =0
+                  Y: =14
+                  Width: =140
+                  Height: =36
+                  TrueText: ="Done"
+                  FalseText: ="Open"
+                  TrueFill: =nfGreen
+                  FalseFill: =nfBaseLight
+                  AccessibleLabel: ="Mark " & ThisItem.Title & " done"
+                  OnCheck: |-
+                    =Patch(ActionItems, LookUp(ActionItems, ID = ThisItem.ID), {Status: "Done", CompletedOn: Today()}); Notify("Marked done. It moved to Completed below, where you can undo it.", NotificationType.Success)
+            - maTitle:
+                Control: Label@2.5.1
+                Properties:
+                  Text: =ThisItem.Title
+                  X: =152
+                  Y: =6
+                  Width: =Parent.TemplateWidth - 230
+                  Height: =26
+                  Size: =13
+                  Color: =nfBaseDarkest
+                  Font: =Font.'Segoe UI'
+                  FontWeight: =FontWeight.Semibold
+            - maProj:
+                Control: Label@2.5.1
+                Properties:
+                  Text: =LookUp(Projects, ID = ThisItem.ProjectID).ProjectCode
+                  X: =152
+                  Y: =32
+                  Width: =200
+                  Height: =22
+                  Size: =12
+                  Color: =nfBaseDark
+                  Font: =Font.'Segoe UI'
+            - maDue:
+                Control: Label@2.5.1
+                Properties:
+                  Text: ="Due " & Text(ThisItem.DueDate, "mmm d")
+                  X: =Parent.TemplateWidth - 110
+                  Y: =18
+                  Width: =110
+                  Height: =28
+                  Size: =13
+                  Color: =If(ThisItem.DueDate < Today(), nfRed, nfBaseDark)
+                  Font: =Font.'Segoe UI'
+                  FontWeight: =FontWeight.Semibold
+                  Align: =Align.Right
+            - maSep:
+                Control: Rectangle@2.3.0
+                Properties:
+                  X: =0
+                  Y: =63
+                  Width: =Parent.TemplateWidth
+                  Height: =1
+                  Fill: =nfBaseLighter
+                  BorderColor: =RGBA(0,0,0,0)
+      - lblMyDoneHead:
+          Control: Label@2.5.1
+          Properties:
+            Text: |-
+              ="Completed: click Undo to reopen"
+            X: =56 + (Parent.Width - 64) / 2
+            Y: =184 + (Parent.Height - 216) * 0.55 + 8
+            Width: =(Parent.Width - 64) / 2 - 32
+            Height: =26
+            Size: =13
+            Color: =nfBaseDarkest
+            Font: =Font.'Segoe UI'
+            FontWeight: =FontWeight.Semibold
+      - galMyDone:
+          Control: Gallery@2.15.0
+          Variant: Vertical
+          Properties:
+            Items: =Sort(Filter(ActionItems, OwnerEmail = nfMe && Status = "Done"), CompletedOn, SortOrder.Descending)
+            X: =56 + (Parent.Width - 64) / 2
+            Y: =184 + (Parent.Height - 216) * 0.55 + 38
+            Width: =(Parent.Width - 64) / 2 - 32
+            Height: =(Parent.Height - 216) * 0.45 - 46
+            TemplateSize: =48
+            TemplatePadding: =0
+            BorderColor: =RGBA(0,0,0,0)
+            AccessibleLabel: ="My completed actions"
+          Children:
+            - mdTitle:
+                Control: Label@2.5.1
+                Properties:
+                  Text: =ThisItem.Title
+                  X: =0
+                  Y: =4
+                  Width: =Parent.TemplateWidth - 140
+                  Height: =22
+                  Size: =12
+                  Color: =nfBaseDark
+                  Font: =Font.'Segoe UI'
+            - mdWhen:
+                Control: Label@2.5.1
+                Properties:
+                  Text: ="Done " & Text(ThisItem.CompletedOn, "mmm d")
+                  X: =0
+                  Y: =24
+                  Width: =200
+                  Height: =20
+                  Size: =11
+                  Color: =nfBaseMedium
+                  Font: =Font.'Segoe UI'
+            - mdUndo:
+                Control: Classic/Button@2.2.0
+                Properties:
+                  Text: ="Undo"
+                  X: =Parent.TemplateWidth - 112
+                  Y: =6
+                  Width: =100
+                  Height: =34
+                  OnSelect: |-
+                    =Patch(ActionItems, LookUp(ActionItems, ID = ThisItem.ID), {Status: "Open", CompletedOn: Blank()}); Notify("Reopened: " & ThisItem.Title, NotificationType.Information)
+                  Size: =13
+                  FontWeight: =FontWeight.Semibold
+                  Font: =Font.'Segoe UI'
+                  RadiusTopLeft: =4
+                  RadiusTopRight: =4
+                  RadiusBottomLeft: =4
+                  RadiusBottomRight: =4
+                  FocusedBorderThickness: =3
+                  FocusedBorderColor: =nfBaseDarkest
+                  Fill: =nfPage
+                  Color: =nfBlue
+                  HoverFill: =nfInfoBg
+                  PressedFill: =nfInfoBg
+                  HoverColor: =nfNavy
+                  BorderColor: =nfBlue
+                  BorderThickness: =1
+                  DisabledFill: =nfPage
+                  DisabledColor: =nfBaseLight
+            - mdSep:
+                Control: Rectangle@2.3.0
+                Properties:
+                  X: =0
+                  Y: =47
+                  Width: =Parent.TemplateWidth
+                  Height: =1
+                  Fill: =nfBaseLighter
+                  BorderColor: =RGBA(0,0,0,0)

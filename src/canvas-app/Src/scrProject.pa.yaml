@@ -1,0 +1,1223 @@
+Screens:
+  scrProject:
+    Properties:
+      Fill: =nfMuted
+      OnVisible: |-
+        =If(IsBlank(varProject) && !IsBlank(Param("projectId")),
+           Set(varProject, LookUp(Projects, ID = Value(Param("projectId")))));
+        Concurrent(
+            ClearCollect(colPM, Sort(Filter(Milestones, ProjectID = varProject.ID), Sequence)),
+            ClearCollect(colPU, Sort(Filter(StatusUpdates, ProjectID = varProject.ID), WeekOf, SortOrder.Ascending)),
+            ClearCollect(colPR, Filter(Risks, ProjectID = varProject.ID)),
+            ClearCollect(colPA, Filter(ActionItems, ProjectID = varProject.ID))
+        )
+    Children:
+      - jHdrBar:
+          Control: Rectangle@2.3.0
+          Properties:
+            X: =0
+            Y: =0
+            Width: =Parent.Width
+            Height: =64
+            Fill: =nfNavy
+            BorderColor: =RGBA(0,0,0,0)
+      - jHdrTitle:
+          Control: Label@2.5.1
+          Properties:
+            Text: ="PMO Project Hub"
+            X: =24
+            Y: =0
+            Width: =300
+            Height: =64
+            Size: =20
+            Color: =Color.White
+            Font: =Font.'Segoe UI'
+            FontWeight: =FontWeight.Semibold
+      - jHdrPMO:
+          Control: Label@2.5.1
+          Properties:
+            Text: =If(nfIsPMO, "PMO admin", "")
+            X: =330
+            Y: =20
+            Width: =100
+            Height: =24
+            Size: =11
+            Color: =nfBaseDarkest
+            Font: =Font.'Segoe UI'
+            Fill: =If(nfIsPMO, nfInfoBg, RGBA(0,0,0,0))
+            Align: =Align.Center
+      - jNavPortfolio:
+          Control: Classic/Button@2.2.0
+          Properties:
+            Text: ="Portfolio"
+            X: =Parent.Width - 560
+            Y: =12
+            Width: =120
+            Height: =40
+            OnSelect: =Navigate(scrPortfolio, ScreenTransition.None)
+            Size: =13
+            FontWeight: =FontWeight.Semibold
+            Font: =Font.'Segoe UI'
+            RadiusTopLeft: =4
+            RadiusTopRight: =4
+            RadiusBottomLeft: =4
+            RadiusBottomRight: =4
+            FocusedBorderThickness: =3
+            FocusedBorderColor: =nfBaseDarkest
+            Fill: =If(App.ActiveScreen = scrPortfolio, nfBlue, RGBA(0,0,0,0))
+            Color: =Color.White
+            HoverFill: =nfBlue
+            PressedFill: =nfNavy
+            BorderColor: =RGBA(0,0,0,0)
+            DisabledFill: =nfBaseLighter
+            DisabledColor: =nfBaseMedium
+      - jNavAnalytics:
+          Control: Classic/Button@2.2.0
+          Properties:
+            Text: ="Analytics"
+            X: =Parent.Width - 430
+            Y: =12
+            Width: =120
+            Height: =40
+            OnSelect: =Navigate(scrAnalytics, ScreenTransition.None)
+            Size: =13
+            FontWeight: =FontWeight.Semibold
+            Font: =Font.'Segoe UI'
+            RadiusTopLeft: =4
+            RadiusTopRight: =4
+            RadiusBottomLeft: =4
+            RadiusBottomRight: =4
+            FocusedBorderThickness: =3
+            FocusedBorderColor: =nfBaseDarkest
+            Fill: =If(App.ActiveScreen = scrAnalytics, nfBlue, RGBA(0,0,0,0))
+            Color: =Color.White
+            HoverFill: =nfBlue
+            PressedFill: =nfNavy
+            BorderColor: =RGBA(0,0,0,0)
+            DisabledFill: =nfBaseLighter
+            DisabledColor: =nfBaseMedium
+      - jNavMyWork:
+          Control: Classic/Button@2.2.0
+          Properties:
+            Text: ="My work"
+            X: =Parent.Width - 300
+            Y: =12
+            Width: =120
+            Height: =40
+            OnSelect: =Navigate(scrMyWork, ScreenTransition.None)
+            Size: =13
+            FontWeight: =FontWeight.Semibold
+            Font: =Font.'Segoe UI'
+            RadiusTopLeft: =4
+            RadiusTopRight: =4
+            RadiusBottomLeft: =4
+            RadiusBottomRight: =4
+            FocusedBorderThickness: =3
+            FocusedBorderColor: =nfBaseDarkest
+            Fill: =If(App.ActiveScreen = scrMyWork, nfBlue, RGBA(0,0,0,0))
+            Color: =Color.White
+            HoverFill: =nfBlue
+            PressedFill: =nfNavy
+            BorderColor: =RGBA(0,0,0,0)
+            DisabledFill: =nfBaseLighter
+            DisabledColor: =nfBaseMedium
+      - jHdrDemo:
+          Control: Label@2.5.1
+          Properties:
+            Text: ="Demo · fictitious data"
+            X: =Parent.Width - 170
+            Y: =0
+            Width: =150
+            Height: =64
+            Size: =11
+            Color: =nfAmber
+            Font: =Font.'Segoe UI'
+            Align: =Align.Right
+      - btnBackPortfolio:
+          Control: Classic/Button@2.2.0
+          Properties:
+            Text: ="← Portfolio"
+            X: =24
+            Y: =76
+            Width: =140
+            Height: =36
+            OnSelect: =Navigate(scrPortfolio, ScreenTransition.Fade)
+            Size: =13
+            FontWeight: =FontWeight.Semibold
+            Font: =Font.'Segoe UI'
+            RadiusTopLeft: =4
+            RadiusTopRight: =4
+            RadiusBottomLeft: =4
+            RadiusBottomRight: =4
+            FocusedBorderThickness: =3
+            FocusedBorderColor: =nfBaseDarkest
+            Fill: =nfPage
+            Color: =nfBlue
+            HoverFill: =nfInfoBg
+            PressedFill: =nfInfoBg
+            HoverColor: =nfNavy
+            BorderColor: =nfBlue
+            BorderThickness: =1
+            DisabledFill: =nfPage
+            DisabledColor: =nfBaseLight
+      - lblProjCode:
+          Control: Label@2.5.1
+          Properties:
+            Text: =varProject.ProjectCode & " · " & varProject.Service & " · " & varProject.ScorecardDomain
+            X: =24
+            Y: =118
+            Width: =Parent.Width - 420
+            Height: =22
+            Size: =12
+            Color: =nfBaseMedium
+            Font: =Font.'Segoe UI'
+      - lblProjTitle:
+          Control: Label@2.5.1
+          Properties:
+            Text: =varProject.Title
+            X: =24
+            Y: =138
+            Width: =Parent.Width - 420
+            Height: =36
+            Size: =22
+            Color: =nfBaseDarkest
+            Font: =Font.'Segoe UI'
+            FontWeight: =FontWeight.Semibold
+      - lblProjMeta:
+          Control: Label@2.5.1
+          Properties:
+            Text: |-
+              ="PM: " & varProject.PMName & " · Sponsor: " & varProject.Sponsor & " · Phase: " & varProject.Phase & " · " & Text(varProject.StartDate, "mmm d") & " – " & Text(varProject.TargetEndDate, "mmm d, yyyy")
+            X: =24
+            Y: =174
+            Width: =Parent.Width - 420
+            Height: =24
+            Size: =12
+            Color: =nfBaseDark
+            Font: =Font.'Segoe UI'
+      - chipProjHealth:
+          Control: Label@2.5.1
+          Properties:
+            Text: =varProject.CurrentHealth
+            X: =Parent.Width - 360
+            Y: =112
+            Width: =120
+            Height: =32
+            Size: =12
+            Color: =nfBaseDarkest
+            Font: =Font.'Segoe UI'
+            FontWeight: =FontWeight.Semibold
+            Align: =Align.Center
+            Fill: =HealthBg(varProject.CurrentHealth)
+            BorderColor: =HealthColor(varProject.CurrentHealth)
+            BorderThickness: =2
+      - btnPostUpdate:
+          Control: Classic/Button@2.2.0
+          Properties:
+            Text: ="Post weekly update"
+            X: =Parent.Width - 224
+            Y: =108
+            Width: =200
+            Height: =40
+            OnSelect: =Navigate(scrUpdate, ScreenTransition.Fade)
+            Size: =13
+            FontWeight: =FontWeight.Semibold
+            Font: =Font.'Segoe UI'
+            RadiusTopLeft: =4
+            RadiusTopRight: =4
+            RadiusBottomLeft: =4
+            RadiusBottomRight: =4
+            FocusedBorderThickness: =3
+            FocusedBorderColor: =nfBaseDarkest
+            Fill: =nfBlue
+            Color: =Color.White
+            HoverFill: =nfNavy
+            PressedFill: =nfNavy
+            BorderColor: =nfBlue
+            DisabledFill: =nfBaseLighter
+            DisabledColor: =nfBaseMedium
+      - btnStatusReport:
+          Control: Classic/Button@2.2.0
+          Properties:
+            Text: =If(varBusy, "Building report…", "Status report (PDF)")
+            X: =Parent.Width - 224
+            Y: =154
+            Width: =200
+            Height: =40
+            OnSelect: |-
+              =Set(varBusy, true);
+              Set(varReport, PMOStatusReport.Run(varProject.ID));
+              Set(varBusy, false);
+              If(IsBlank(varReport.reporturl),
+                 Notify("Couldn't build the report. Try again in a minute.", NotificationType.Error),
+                 Notify("Report saved to the team's SharePoint (General folder).", NotificationType.Success); Launch(varReport.reporturl))
+            Size: =13
+            FontWeight: =FontWeight.Semibold
+            Font: =Font.'Segoe UI'
+            RadiusTopLeft: =4
+            RadiusTopRight: =4
+            RadiusBottomLeft: =4
+            RadiusBottomRight: =4
+            FocusedBorderThickness: =3
+            FocusedBorderColor: =nfBaseDarkest
+            Fill: =nfPage
+            Color: =nfBlue
+            HoverFill: =nfInfoBg
+            PressedFill: =nfInfoBg
+            HoverColor: =nfNavy
+            BorderColor: =nfBlue
+            BorderThickness: =1
+            DisabledFill: =nfPage
+            DisabledColor: =nfBaseLight
+            DisplayMode: =If(varBusy, DisplayMode.Disabled, DisplayMode.Edit)
+      - galTabs:
+          Control: Gallery@2.15.0
+          Variant: Horizontal
+          Properties:
+            Items: =["Overview", "Milestones", "Status history", "Risks", "Actions"]
+            X: =24
+            Y: =206
+            Width: =800
+            Height: =48
+            TemplateSize: =150
+            TemplatePadding: =0
+            BorderColor: =RGBA(0,0,0,0)
+            AccessibleLabel: ="Project tabs"
+            OnSelect: =Set(varTab, ThisItem.Value)
+          Children:
+            - tabLbl:
+                Control: Label@2.5.1
+                Properties:
+                  Text: =ThisItem.Value
+                  X: =0
+                  Y: =0
+                  Width: =Parent.TemplateWidth
+                  Height: =42
+                  Size: =14
+                  Color: =If(ThisItem.Value = varTab, nfBlue, nfBaseDark)
+                  Font: =Font.'Segoe UI'
+                  Align: =Align.Center
+                  FontWeight: =If(ThisItem.Value = varTab, FontWeight.Bold, FontWeight.Normal)
+                  OnSelect: =Select(Parent)
+            - tabLine:
+                Control: Rectangle@2.3.0
+                Properties:
+                  X: =12
+                  Y: =42
+                  Width: =Parent.TemplateWidth - 24
+                  Height: =4
+                  Fill: =nfBlue
+                  BorderColor: =RGBA(0,0,0,0)
+                  Visible: =ThisItem.Value = varTab
+      - tabDivider:
+          Control: Rectangle@2.3.0
+          Properties:
+            X: =24
+            Y: =254
+            Width: =Parent.Width - 48
+            Height: =1
+            Fill: =nfBaseLighter
+            BorderColor: =RGBA(0,0,0,0)
+      - conOverview:
+          Control: GroupContainer@1.5.0
+          Variant: ManualLayout
+          Properties:
+            X: =24
+            Y: =264
+            Width: =Parent.Width - 48
+            Height: =Parent.Height - 280
+            Fill: =nfPage
+            BorderColor: =nfBaseLighter
+            BorderThickness: =1
+            Visible: =varTab = "Overview"
+          Children:
+            - ovObjHead:
+                Control: Label@2.5.1
+                Properties:
+                  Text: ="Objective"
+                  X: =16
+                  Y: =12
+                  Width: =Parent.Width / 2 - 32
+                  Height: =24
+                  Size: =13
+                  Color: =nfBaseDarkest
+                  Font: =Font.'Segoe UI'
+                  FontWeight: =FontWeight.Semibold
+            - ovObj:
+                Control: Label@2.5.1
+                Properties:
+                  Text: =varProject.Objective
+                  X: =16
+                  Y: =36
+                  Width: =Parent.Width / 2 - 32
+                  Height: =64
+                  Size: =13
+                  Color: =nfBaseDarker
+                  Font: =Font.'Segoe UI'
+                  VerticalAlign: =VerticalAlign.Top
+            - ovMetricHead:
+                Control: Label@2.5.1
+                Properties:
+                  Text: |-
+                    ="Target metric: " & varProject.MetricName
+                  X: =16
+                  Y: =108
+                  Width: =Parent.Width / 2 - 32
+                  Height: =24
+                  Size: =13
+                  Color: =nfBaseDarkest
+                  Font: =Font.'Segoe UI'
+                  FontWeight: =FontWeight.Semibold
+            - ovMetricTxt:
+                Control: Label@2.5.1
+                Properties:
+                  Text: ="Baseline " & varProject.MetricBaseline & "  →  now " & varProject.MetricCurrent & "  →  target " & varProject.MetricTarget
+                  X: =16
+                  Y: =132
+                  Width: =Parent.Width / 2 - 32
+                  Height: =24
+                  Size: =13
+                  Color: =nfBaseDarker
+                  Font: =Font.'Segoe UI'
+            - ovProg:
+                Control: Label@2.5.1
+                Properties:
+                  Text: =Pct(MetricProgress(varProject.MetricBaseline, varProject.MetricTarget, varProject.MetricCurrent)) & " of the way to target"
+                  X: =16
+                  Y: =158
+                  Width: =Parent.Width / 2 - 32
+                  Height: =30
+                  Size: =16
+                  Color: =nfBlue
+                  Font: =Font.'Segoe UI'
+                  FontWeight: =FontWeight.Semibold
+            - ovBarBg:
+                Control: Rectangle@2.3.0
+                Properties:
+                  X: =16
+                  Y: =192
+                  Width: =Parent.Width / 2 - 48
+                  Height: =10
+                  Fill: =nfBaseLighter
+                  BorderColor: =RGBA(0,0,0,0)
+            - ovBar:
+                Control: Rectangle@2.3.0
+                Properties:
+                  X: =16
+                  Y: =192
+                  Width: =(Parent.Width / 2 - 48) * MetricProgress(varProject.MetricBaseline, varProject.MetricTarget, varProject.MetricCurrent)
+                  Height: =10
+                  Fill: =nfBlue
+                  BorderColor: =RGBA(0,0,0,0)
+            - ovHealthHead:
+                Control: Label@2.5.1
+                Properties:
+                  Text: ="Weekly health (hover for blockers)"
+                  X: =16
+                  Y: =220
+                  Width: =Parent.Width / 2 - 32
+                  Height: =24
+                  Size: =13
+                  Color: =nfBaseDarkest
+                  Font: =Font.'Segoe UI'
+                  FontWeight: =FontWeight.Semibold
+            - galHealth:
+                Control: Gallery@2.15.0
+                Variant: Horizontal
+                Properties:
+                  Items: =colPU
+                  X: =16
+                  Y: =246
+                  Width: =Parent.Width / 2 - 32
+                  Height: =70
+                  TemplateSize: =52
+                  TemplatePadding: =2
+                  BorderColor: =RGBA(0,0,0,0)
+                  AccessibleLabel: ="Weekly health history"
+                Children:
+                  - hsCell:
+                      Control: Label@2.5.1
+                      Properties:
+                        Text: =""
+                        X: =6
+                        Y: =4
+                        Width: =36
+                        Height: =36
+                        Size: =13
+                        Color: =nfBaseDarker
+                        Font: =Font.'Segoe UI'
+                        Fill: =HealthColor(ThisItem.Health)
+                        Tooltip: |-
+                          =Text(ThisItem.WeekOf, "mmm d") & ": " & ThisItem.Health & If(IsBlank(ThisItem.Blockers), "", " – " & ThisItem.Blockers)
+                  - hsWeek:
+                      Control: Label@2.5.1
+                      Properties:
+                        Text: =Text(ThisItem.WeekOf, "m/d")
+                        X: =0
+                        Y: =42
+                        Width: =48
+                        Height: =20
+                        Size: =10
+                        Color: =nfBaseMedium
+                        Font: =Font.'Segoe UI'
+                        Align: =Align.Center
+            - ovChartTitle:
+                Control: Label@2.5.1
+                Properties:
+                  Text: =varProject.MetricName & " by week vs. target"
+                  X: =Parent.Width / 2
+                  Y: =12
+                  Width: =Parent.Width / 2 - 64
+                  Height: =24
+                  Size: =13
+                  Color: =nfBaseDarkest
+                  Font: =Font.'Segoe UI'
+                  FontWeight: =FontWeight.Semibold
+            - chtMetric:
+                Control: LineChart@2.3.0
+                Properties:
+                  Items: =ShowColumns(AddColumns(colPU, Week, Text(WeekOf, "mmm d"), Actual, MetricValue, Target, varProject.MetricTarget), Week, Actual, Target)
+                  Items.Labels: =Week
+                  Items.Series1: =Actual
+                  Items.Series2: =Target
+                  NumberOfSeries: =2
+                  X: =Parent.Width / 2
+                  Y: =40
+                  Width: =Parent.Width / 2 - 64
+                  Height: =Parent.Height - 110
+                  ItemColorSet: =[nfBlue, nfBaseLight]
+                  Color: =nfBaseDarker
+                  Size: =11
+                  Font: =Font.'Segoe UI'
+            - lgdMetric:
+                Control: Legend@2.1.0
+                Properties:
+                  Items: =chtMetric.SeriesLabels
+                  Items.Value: =Value
+                  ItemColorSet: =chtMetric.ItemColorSet
+                  X: =Parent.Width / 2
+                  Y: =Parent.Height - 64
+                  Width: =360
+                  Height: =48
+                  Color: =nfBaseDarker
+                  Font: =Font.'Segoe UI'
+      - conMilestones:
+          Control: GroupContainer@1.5.0
+          Variant: ManualLayout
+          Properties:
+            X: =24
+            Y: =264
+            Width: =Parent.Width - 48
+            Height: =Parent.Height - 280
+            Fill: =nfPage
+            BorderColor: =nfBaseLighter
+            BorderThickness: =1
+            Visible: =varTab = "Milestones"
+          Children:
+            - msHead:
+                Control: Label@2.5.1
+                Properties:
+                  Text: |-
+                    ="Milestones: planned vs. forecast or actual, with schedule variance"
+                  X: =16
+                  Y: =8
+                  Width: =700
+                  Height: =28
+                  Size: =13
+                  Color: =nfBaseDarkest
+                  Font: =Font.'Segoe UI'
+                  FontWeight: =FontWeight.Semibold
+            - galMilestones:
+                Control: Gallery@2.15.0
+                Variant: Vertical
+                Properties:
+                  Items: =colPM
+                  X: =16
+                  Y: =40
+                  Width: =Parent.Width - 32
+                  Height: =Parent.Height - 56
+                  TemplateSize: =60
+                  TemplatePadding: =0
+                  BorderColor: =RGBA(0,0,0,0)
+                  AccessibleLabel: ="Milestones"
+                Children:
+                  - msName:
+                      Control: Label@2.5.1
+                      Properties:
+                        Text: =ThisItem.Sequence & ". " & ThisItem.Title
+                        X: =8
+                        Y: =6
+                        Width: =330
+                        Height: =26
+                        Size: =14
+                        Color: =nfBaseDarkest
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                  - msDates:
+                      Control: Label@2.5.1
+                      Properties:
+                        Text: ="Planned " & Text(ThisItem.PlannedDate, "mmm d") & " · " & If(IsBlank(ThisItem.ActualDate), "Forecast " & Text(ThisItem.ForecastDate, "mmm d"), "Done " & Text(ThisItem.ActualDate, "mmm d"))
+                        X: =8
+                        Y: =30
+                        Width: =330
+                        Height: =24
+                        Size: =12
+                        Color: =nfBaseDark
+                        Font: =Font.'Segoe UI'
+                  - msStatus:
+                      Control: Label@2.5.1
+                      Properties:
+                        Text: =ThisItem.Status
+                        X: =350
+                        Y: =16
+                        Width: =110
+                        Height: =28
+                        Size: =12
+                        Color: =nfBaseDarkest
+                        Font: =Font.'Segoe UI'
+                        Align: =Align.Center
+                        Fill: =If(ThisItem.Status = "Done", nfSuccessBg, ThisItem.Status = "In progress", nfInfoBg, nfMuted)
+                  - msVar:
+                      Control: Label@2.5.1
+                      Properties:
+                        Text: |-
+                          =With({v: SlipDays(ThisItem.PlannedDate, Coalesce(ThisItem.ActualDate, ThisItem.ForecastDate))}, If(v > 0, "+" & v & " days late", v < 0, Abs(v) & " days early", "On time"))
+                        X: =476
+                        Y: =16
+                        Width: =200
+                        Height: =28
+                        Size: =13
+                        Color: =If(SlipDays(ThisItem.PlannedDate, Coalesce(ThisItem.ActualDate, ThisItem.ForecastDate)) > 0, nfRed, nfGreen)
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                  - msTrack:
+                      Control: Rectangle@2.3.0
+                      Properties:
+                        X: =700
+                        Y: =29
+                        Width: =(Parent.TemplateWidth - 720)
+                        Height: =2
+                        Fill: =nfBaseLighter
+                        BorderColor: =RGBA(0,0,0,0)
+                  - msDot:
+                      Control: Rectangle@2.3.0
+                      Properties:
+                        X: =700 + (Parent.TemplateWidth - 720) * DateDiff(varProject.StartDate, ThisItem.PlannedDate) / Max(1, DateDiff(varProject.StartDate, varProject.TargetEndDate)) - 7
+                        Y: =23
+                        Width: =14
+                        Height: =14
+                        Fill: =If(ThisItem.Status = "Done", nfGreen, SlipDays(ThisItem.PlannedDate, Coalesce(ThisItem.ActualDate, ThisItem.ForecastDate)) > 0, nfRed, nfBlue)
+                        BorderColor: =RGBA(0,0,0,0)
+                  - msSep:
+                      Control: Rectangle@2.3.0
+                      Properties:
+                        X: =0
+                        Y: =59
+                        Width: =Parent.TemplateWidth
+                        Height: =1
+                        Fill: =nfBaseLighter
+                        BorderColor: =RGBA(0,0,0,0)
+      - conHistory:
+          Control: GroupContainer@1.5.0
+          Variant: ManualLayout
+          Properties:
+            X: =24
+            Y: =264
+            Width: =Parent.Width - 48
+            Height: =Parent.Height - 280
+            Fill: =nfPage
+            BorderColor: =nfBaseLighter
+            BorderThickness: =1
+            Visible: =varTab = "Status history"
+          Children:
+            - galHistory:
+                Control: Gallery@2.15.0
+                Variant: Vertical
+                Properties:
+                  Items: =Sort(colPU, WeekOf, SortOrder.Descending)
+                  X: =16
+                  Y: =12
+                  Width: =Parent.Width - 32
+                  Height: =Parent.Height - 24
+                  TemplateSize: =128
+                  TemplatePadding: =0
+                  BorderColor: =RGBA(0,0,0,0)
+                  AccessibleLabel: ="Status history"
+                Children:
+                  - hWeek:
+                      Control: Label@2.5.1
+                      Properties:
+                        Text: ="Week of " & Text(ThisItem.WeekOf, "mmm d, yyyy")
+                        X: =8
+                        Y: =8
+                        Width: =260
+                        Height: =28
+                        Size: =14
+                        Color: =nfBaseDarkest
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                  - hChip:
+                      Control: Label@2.5.1
+                      Properties:
+                        Text: =ThisItem.Health
+                        X: =276
+                        Y: =8
+                        Width: =96
+                        Height: =28
+                        Size: =12
+                        Color: =nfBaseDarkest
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                        Align: =Align.Center
+                        Fill: =HealthBg(ThisItem.Health)
+                        BorderColor: =HealthColor(ThisItem.Health)
+                        BorderThickness: =2
+                  - hPct:
+                      Control: Label@2.5.1
+                      Properties:
+                        Text: |-
+                          =ThisItem.PercentComplete & "% complete · " & varProject.MetricName & ": " & ThisItem.MetricValue
+                        X: =388
+                        Y: =8
+                        Width: =Parent.TemplateWidth - 400
+                        Height: =28
+                        Size: =12
+                        Color: =nfBaseDark
+                        Font: =Font.'Segoe UI'
+                  - hAcc:
+                      Control: Label@2.5.1
+                      Properties:
+                        Text: |-
+                          ="Done: " & ThisItem.Accomplishments
+                        X: =8
+                        Y: =42
+                        Width: =(Parent.TemplateWidth - 48) / 3
+                        Height: =78
+                        Size: =12
+                        Color: =nfBaseDarker
+                        Font: =Font.'Segoe UI'
+                        VerticalAlign: =VerticalAlign.Top
+                  - hNext:
+                      Control: Label@2.5.1
+                      Properties:
+                        Text: |-
+                          ="Next: " & ThisItem.NextSteps
+                        X: =16 + (Parent.TemplateWidth - 48) / 3
+                        Y: =42
+                        Width: =(Parent.TemplateWidth - 48) / 3
+                        Height: =78
+                        Size: =12
+                        Color: =nfBaseDarker
+                        Font: =Font.'Segoe UI'
+                        VerticalAlign: =VerticalAlign.Top
+                  - hBlk:
+                      Control: Label@2.5.1
+                      Properties:
+                        Text: |-
+                          ="Blockers: " & If(IsBlank(ThisItem.Blockers), "None", ThisItem.Blockers)
+                        X: =24 + 2 * (Parent.TemplateWidth - 48) / 3
+                        Y: =42
+                        Width: =(Parent.TemplateWidth - 48) / 3
+                        Height: =78
+                        Size: =12
+                        Color: =If(IsBlank(ThisItem.Blockers), nfBaseMedium, nfRed)
+                        Font: =Font.'Segoe UI'
+                        VerticalAlign: =VerticalAlign.Top
+                  - hSep:
+                      Control: Rectangle@2.3.0
+                      Properties:
+                        X: =0
+                        Y: =127
+                        Width: =Parent.TemplateWidth
+                        Height: =1
+                        Fill: =nfBaseLighter
+                        BorderColor: =RGBA(0,0,0,0)
+      - conRisks:
+          Control: GroupContainer@1.5.0
+          Variant: ManualLayout
+          Properties:
+            X: =24
+            Y: =264
+            Width: =Parent.Width - 48
+            Height: =Parent.Height - 280
+            Fill: =nfPage
+            BorderColor: =nfBaseLighter
+            BorderThickness: =1
+            Visible: =varTab = "Risks"
+          Children:
+            - rkHeatTitle:
+                Control: Label@2.5.1
+                Properties:
+                  Text: ="Risk heat map (open risks)"
+                  X: =16
+                  Y: =8
+                  Width: =320
+                  Height: =28
+                  Size: =13
+                  Color: =nfBaseDarkest
+                  Font: =Font.'Segoe UI'
+                  FontWeight: =FontWeight.Semibold
+            - rkAxisL:
+                Control: Label@2.5.1
+                Properties:
+                  Text: ="↑ Likelihood (5 top)"
+                  X: =16
+                  Y: =36
+                  Width: =300
+                  Height: =20
+                  Size: =11
+                  Color: =nfBaseMedium
+                  Font: =Font.'Segoe UI'
+            - galHeat:
+                Control: Gallery@2.15.0
+                Variant: Vertical
+                Properties:
+                  Items: |-
+                    =ForAll(Sequence(25) As s, {L: 5 - RoundDown((s.Value - 1) / 5, 0), I: Mod(s.Value - 1, 5) + 1})
+                  X: =16
+                  Y: =58
+                  Width: =300
+                  Height: =300
+                  WrapCount: =5
+                  TemplateSize: =58
+                  TemplatePadding: =2
+                  BorderColor: =RGBA(0,0,0,0)
+                  AccessibleLabel: ="Risk heat map, likelihood by impact"
+                Children:
+                  - hmCell:
+                      Control: Label@2.5.1
+                      Properties:
+                        Text: |-
+                          =With({n: CountIf(colPR, Likelihood = ThisItem.L && Impact = ThisItem.I && Status <> "Closed")}, If(n = 0, "", Text(n)))
+                        X: =0
+                        Y: =0
+                        Width: =Parent.TemplateWidth
+                        Height: =Parent.TemplateHeight
+                        Size: =18
+                        Color: =nfBaseDarkest
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                        Align: =Align.Center
+                        Fill: |-
+                          =With({score: ThisItem.L * ThisItem.I}, ColorFade(If(score >= 15, nfRed, score >= 8, nfAmber, nfGreen), 0.55))
+                        Tooltip: ="Likelihood " & ThisItem.L & " × Impact " & ThisItem.I
+            - rkAxisI:
+                Control: Label@2.5.1
+                Properties:
+                  Text: ="Impact → (5 right)"
+                  X: =16
+                  Y: =360
+                  Width: =300
+                  Height: =20
+                  Size: =11
+                  Color: =nfBaseMedium
+                  Font: =Font.'Segoe UI'
+            - rkListTitle:
+                Control: Label@2.5.1
+                Properties:
+                  Text: ="Risks, highest score first"
+                  X: =340
+                  Y: =8
+                  Width: =400
+                  Height: =28
+                  Size: =13
+                  Color: =nfBaseDarkest
+                  Font: =Font.'Segoe UI'
+                  FontWeight: =FontWeight.Semibold
+            - galRisks:
+                Control: Gallery@2.15.0
+                Variant: Vertical
+                Properties:
+                  Items: =Sort(colPR, RiskScore, SortOrder.Descending)
+                  X: =340
+                  Y: =40
+                  Width: =Parent.Width - 356
+                  Height: =Parent.Height - 180
+                  TemplateSize: =74
+                  TemplatePadding: =0
+                  BorderColor: =RGBA(0,0,0,0)
+                  AccessibleLabel: ="Risk list"
+                Children:
+                  - rkScore:
+                      Control: Label@2.5.1
+                      Properties:
+                        Text: =ThisItem.RiskScore
+                        X: =4
+                        Y: =10
+                        Width: =48
+                        Height: =48
+                        Size: =18
+                        Color: =nfBaseDarkest
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                        Align: =Align.Center
+                        Fill: =If(ThisItem.RiskScore >= 15, nfErrorBg, ThisItem.RiskScore >= 8, nfWarningBg, nfSuccessBg)
+                  - rkTitle:
+                      Control: Label@2.5.1
+                      Properties:
+                        Text: =ThisItem.Title
+                        X: =64
+                        Y: =6
+                        Width: =Parent.TemplateWidth - 76
+                        Height: =24
+                        Size: =14
+                        Color: =nfBaseDarkest
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                  - rkMeta:
+                      Control: Label@2.5.1
+                      Properties:
+                        Text: |-
+                          ="L" & ThisItem.Likelihood & " × I" & ThisItem.Impact & " · " & ThisItem.Status & " · Owner: " & ThisItem.Owner
+                        X: =64
+                        Y: =28
+                        Width: =Parent.TemplateWidth - 76
+                        Height: =20
+                        Size: =12
+                        Color: =nfBaseDark
+                        Font: =Font.'Segoe UI'
+                  - rkMit:
+                      Control: Label@2.5.1
+                      Properties:
+                        Text: |-
+                          ="Mitigation: " & ThisItem.Mitigation
+                        X: =64
+                        Y: =48
+                        Width: =Parent.TemplateWidth - 76
+                        Height: =22
+                        Size: =12
+                        Color: =nfBaseDarker
+                        Font: =Font.'Segoe UI'
+                  - rkSep:
+                      Control: Rectangle@2.3.0
+                      Properties:
+                        X: =0
+                        Y: =73
+                        Width: =Parent.TemplateWidth
+                        Height: =1
+                        Fill: =nfBaseLighter
+                        BorderColor: =RGBA(0,0,0,0)
+            - rkAddHead:
+                Control: Label@2.5.1
+                Properties:
+                  Text: ="Add a risk"
+                  X: =340
+                  Y: =Parent.Height - 132
+                  Width: =200
+                  Height: =24
+                  Size: =13
+                  Color: =nfBaseDarkest
+                  Font: =Font.'Segoe UI'
+                  FontWeight: =FontWeight.Semibold
+            - txtRiskTitle:
+                Control: Classic/TextInput@2.3.2
+                Properties:
+                  Default: =""
+                  X: =340
+                  Y: =Parent.Height - 104
+                  Width: =360
+                  Height: =40
+                  AccessibleLabel: ="Risk title"
+                  HintText: ="Describe the risk"
+                  Size: =13
+                  BorderColor: =nfBaseLight
+                  HoverBorderColor: =nfBlue
+                  FocusedBorderThickness: =3
+                  Color: =nfBaseDarkest
+                  Font: =Font.'Segoe UI'
+            - lblLik:
+                Control: Label@2.5.1
+                Properties:
+                  Text: ="Likelihood " & sldLikelihood.Value
+                  X: =716
+                  Y: =Parent.Height - 110
+                  Width: =140
+                  Height: =20
+                  Size: =11
+                  Color: =nfBaseDarker
+                  Font: =Font.'Segoe UI'
+            - sldLikelihood:
+                Control: Classic/Slider@2.1.0
+                Properties:
+                  Min: =1
+                  Max: =5
+                  Default: =3
+                  X: =716
+                  Y: =Parent.Height - 90
+                  Width: =140
+                  Height: =32
+                  AccessibleLabel: ="Likelihood, 1 to 5"
+                  ValueFill: =nfBlue
+                  RailFill: =nfBaseLighter
+            - lblImp:
+                Control: Label@2.5.1
+                Properties:
+                  Text: ="Impact " & sldImpact.Value
+                  X: =872
+                  Y: =Parent.Height - 110
+                  Width: =140
+                  Height: =20
+                  Size: =11
+                  Color: =nfBaseDarker
+                  Font: =Font.'Segoe UI'
+            - sldImpact:
+                Control: Classic/Slider@2.1.0
+                Properties:
+                  Min: =1
+                  Max: =5
+                  Default: =3
+                  X: =872
+                  Y: =Parent.Height - 90
+                  Width: =140
+                  Height: =32
+                  AccessibleLabel: ="Impact, 1 to 5"
+                  ValueFill: =nfBlue
+                  RailFill: =nfBaseLighter
+            - txtMitigation:
+                Control: Classic/TextInput@2.3.2
+                Properties:
+                  Default: =""
+                  X: =340
+                  Y: =Parent.Height - 56
+                  Width: =672
+                  Height: =40
+                  AccessibleLabel: ="Mitigation"
+                  HintText: ="How will you reduce it?"
+                  Size: =13
+                  BorderColor: =nfBaseLight
+                  HoverBorderColor: =nfBlue
+                  FocusedBorderThickness: =3
+                  Color: =nfBaseDarkest
+                  Font: =Font.'Segoe UI'
+            - btnAddRisk:
+                Control: Classic/Button@2.2.0
+                Properties:
+                  Text: ="Add risk"
+                  X: =1028
+                  Y: =Parent.Height - 56
+                  Width: =140
+                  Height: =40
+                  OnSelect: |-
+                    =Patch(Risks, Defaults(Risks), {
+                        Title: txtRiskTitle.Text, ProjectID: varProject.ID,
+                        Likelihood: sldLikelihood.Value, Impact: sldImpact.Value,
+                        RiskScore: sldLikelihood.Value * sldImpact.Value,
+                        Mitigation: txtMitigation.Text, Owner: User().FullName, Status: "Open"
+                    });
+                    If(IsEmpty(Errors(Risks)),
+                       ClearCollect(colPR, Filter(Risks, ProjectID = varProject.ID)); Reset(txtRiskTitle); Reset(txtMitigation);
+                       Notify("Risk added", NotificationType.Success),
+                       Notify("Couldn't save: " & First(Errors(Risks)).Message, NotificationType.Error))
+                  Size: =13
+                  FontWeight: =FontWeight.Semibold
+                  Font: =Font.'Segoe UI'
+                  RadiusTopLeft: =4
+                  RadiusTopRight: =4
+                  RadiusBottomLeft: =4
+                  RadiusBottomRight: =4
+                  FocusedBorderThickness: =3
+                  FocusedBorderColor: =nfBaseDarkest
+                  Fill: =nfBlue
+                  Color: =Color.White
+                  HoverFill: =nfNavy
+                  PressedFill: =nfNavy
+                  BorderColor: =nfBlue
+                  DisabledFill: =nfBaseLighter
+                  DisabledColor: =nfBaseMedium
+                  DisplayMode: =If(IsBlank(Trim(txtRiskTitle.Text)), DisplayMode.Disabled, DisplayMode.Edit)
+      - conActions:
+          Control: GroupContainer@1.5.0
+          Variant: ManualLayout
+          Properties:
+            X: =24
+            Y: =264
+            Width: =Parent.Width - 48
+            Height: =Parent.Height - 280
+            Fill: =nfPage
+            BorderColor: =nfBaseLighter
+            BorderThickness: =1
+            Visible: =varTab = "Actions"
+          Children:
+            - acHead:
+                Control: Label@2.5.1
+                Properties:
+                  Text: ="Action items (toggle to mark done; toggle again to undo)"
+                  X: =16
+                  Y: =8
+                  Width: =500
+                  Height: =28
+                  Size: =13
+                  Color: =nfBaseDarkest
+                  Font: =Font.'Segoe UI'
+                  FontWeight: =FontWeight.Semibold
+            - galActions:
+                Control: Gallery@2.15.0
+                Variant: Vertical
+                Properties:
+                  Items: =Sort(colPA, DueDate, SortOrder.Ascending)
+                  X: =16
+                  Y: =40
+                  Width: =Parent.Width - 32
+                  Height: =Parent.Height - 160
+                  TemplateSize: =56
+                  TemplatePadding: =0
+                  BorderColor: =RGBA(0,0,0,0)
+                  AccessibleLabel: ="Action items"
+                Children:
+                  - tglDone:
+                      Control: Classic/Toggle@2.1.0
+                      Properties:
+                        Default: =ThisItem.Status = "Done"
+                        X: =4
+                        Y: =10
+                        Width: =140
+                        Height: =36
+                        TrueText: ="Done"
+                        FalseText: ="Open"
+                        TrueFill: =nfGreen
+                        FalseFill: =nfBaseLight
+                        AccessibleLabel: ="Mark " & ThisItem.Title & " done"
+                        OnCheck: |-
+                          =Patch(ActionItems, LookUp(ActionItems, ID = ThisItem.ID), {Status: "Done", CompletedOn: Today()}); ClearCollect(colPA, Filter(ActionItems, ProjectID = varProject.ID)); Notify("Marked done. Toggle it back to reopen.", NotificationType.Success)
+                        OnUncheck: |-
+                          =Patch(ActionItems, LookUp(ActionItems, ID = ThisItem.ID), {Status: "Open", CompletedOn: Blank()}); ClearCollect(colPA, Filter(ActionItems, ProjectID = varProject.ID)); Notify("Reopened.", NotificationType.Information)
+                  - acTitle:
+                      Control: Label@2.5.1
+                      Properties:
+                        Text: =ThisItem.Title
+                        X: =156
+                        Y: =4
+                        Width: =Parent.TemplateWidth - 400
+                        Height: =26
+                        Size: =14
+                        Color: =nfBaseDarkest
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                  - acOwner:
+                      Control: Label@2.5.1
+                      Properties:
+                        Text: |-
+                          ="Owner: " & ThisItem.OwnerName
+                        X: =156
+                        Y: =28
+                        Width: =Parent.TemplateWidth - 400
+                        Height: =22
+                        Size: =12
+                        Color: =nfBaseDark
+                        Font: =Font.'Segoe UI'
+                  - acDue:
+                      Control: Label@2.5.1
+                      Properties:
+                        Text: =If(ThisItem.Status = "Done", "Done " & Text(ThisItem.CompletedOn, "mmm d"), "Due " & Text(ThisItem.DueDate, "mmm d"))
+                        X: =Parent.TemplateWidth - 260
+                        Y: =14
+                        Width: =240
+                        Height: =28
+                        Size: =13
+                        Color: =If(ThisItem.Status = "Open" && ThisItem.DueDate < Today(), nfRed, nfBaseDark)
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                        Align: =Align.Right
+                  - acSep:
+                      Control: Rectangle@2.3.0
+                      Properties:
+                        X: =0
+                        Y: =55
+                        Width: =Parent.TemplateWidth
+                        Height: =1
+                        Fill: =nfBaseLighter
+                        BorderColor: =RGBA(0,0,0,0)
+            - acAddHead:
+                Control: Label@2.5.1
+                Properties:
+                  Text: ="Assign an action"
+                  X: =16
+                  Y: =Parent.Height - 112
+                  Width: =200
+                  Height: =24
+                  Size: =13
+                  Color: =nfBaseDarkest
+                  Font: =Font.'Segoe UI'
+                  FontWeight: =FontWeight.Semibold
+            - txtActionTitle:
+                Control: Classic/TextInput@2.3.2
+                Properties:
+                  Default: =""
+                  X: =16
+                  Y: =Parent.Height - 84
+                  Width: =420
+                  Height: =40
+                  AccessibleLabel: ="Action title"
+                  HintText: ="What needs to happen?"
+                  Size: =13
+                  BorderColor: =nfBaseLight
+                  HoverBorderColor: =nfBlue
+                  FocusedBorderThickness: =3
+                  Color: =nfBaseDarkest
+                  Font: =Font.'Segoe UI'
+            - drpActionOwner:
+                Control: Classic/DropDown@2.3.1
+                Properties:
+                  Items: =colPeople
+                  X: =452
+                  Y: =Parent.Height - 84
+                  Width: =240
+                  Height: =40
+                  AccessibleLabel: ="Action owner"
+                  Size: =13
+                  Fill: =nfPage
+                  BorderColor: =nfBaseLight
+                  ChevronBackground: =nfPage
+                  ChevronFill: =nfBaseDarker
+                  Color: =nfBaseDarkest
+                  SelectionFill: =nfBlue
+                  Font: =Font.'Segoe UI'
+                  Default: =User().FullName
+                  Items.Value: =OwnerName
+            - dpActionDue:
+                Control: Classic/DatePicker@2.6.0
+                Properties:
+                  DefaultDate: =DateAdd(Today(), 7, TimeUnit.Days)
+                  X: =708
+                  Y: =Parent.Height - 84
+                  Width: =200
+                  Height: =40
+                  AccessibleLabel: ="Due date"
+                  Size: =13
+                  BorderColor: =nfBaseLight
+                  IconBackground: =nfBlue
+            - btnAddAction:
+                Control: Classic/Button@2.2.0
+                Properties:
+                  Text: ="Add action"
+                  X: =924
+                  Y: =Parent.Height - 84
+                  Width: =140
+                  Height: =40
+                  OnSelect: |-
+                    =Patch(ActionItems, Defaults(ActionItems), {
+                        Title: txtActionTitle.Text, ProjectID: varProject.ID,
+                        OwnerName: drpActionOwner.Selected.OwnerName, OwnerEmail: Lower(drpActionOwner.Selected.OwnerEmail),
+                        DueDate: dpActionDue.SelectedDate, Status: "Open"
+                    });
+                    If(IsEmpty(Errors(ActionItems)),
+                       ClearCollect(colPA, Filter(ActionItems, ProjectID = varProject.ID)); Reset(txtActionTitle);
+                       Notify("Action assigned to " & drpActionOwner.Selected.OwnerName, NotificationType.Success),
+                       Notify("Couldn't save: " & First(Errors(ActionItems)).Message, NotificationType.Error))
+                  Size: =13
+                  FontWeight: =FontWeight.Semibold
+                  Font: =Font.'Segoe UI'
+                  RadiusTopLeft: =4
+                  RadiusTopRight: =4
+                  RadiusBottomLeft: =4
+                  RadiusBottomRight: =4
+                  FocusedBorderThickness: =3
+                  FocusedBorderColor: =nfBaseDarkest
+                  Fill: =nfBlue
+                  Color: =Color.White
+                  HoverFill: =nfNavy
+                  PressedFill: =nfNavy
+                  BorderColor: =nfBlue
+                  DisabledFill: =nfBaseLighter
+                  DisabledColor: =nfBaseMedium
+                  DisplayMode: =If(IsBlank(Trim(txtActionTitle.Text)) || IsBlank(dpActionDue.SelectedDate), DisplayMode.Disabled, DisplayMode.Edit)

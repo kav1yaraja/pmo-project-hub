@@ -1,0 +1,515 @@
+Screens:
+  scrPortfolio:
+    Properties:
+      Fill: =nfMuted
+      OnVisible: |-
+        =Concurrent(
+            ClearCollect(colProjects, Filter(Projects, IsActive = true)),
+            ClearCollect(colMilestones, Milestones),
+            ClearCollect(colOpenActions, Filter(ActionItems, Status = "Open"))
+        )
+    Children:
+      - pHdrBar:
+          Control: Rectangle@2.3.0
+          Properties:
+            X: =0
+            Y: =0
+            Width: =Parent.Width
+            Height: =64
+            Fill: =nfNavy
+            BorderColor: =RGBA(0,0,0,0)
+      - pHdrTitle:
+          Control: Label@2.5.1
+          Properties:
+            Text: ="PMO Project Hub"
+            X: =24
+            Y: =0
+            Width: =300
+            Height: =64
+            Size: =20
+            Color: =Color.White
+            Font: =Font.'Segoe UI'
+            FontWeight: =FontWeight.Semibold
+      - pHdrPMO:
+          Control: Label@2.5.1
+          Properties:
+            Text: =If(nfIsPMO, "PMO admin", "")
+            X: =330
+            Y: =20
+            Width: =100
+            Height: =24
+            Size: =11
+            Color: =nfBaseDarkest
+            Font: =Font.'Segoe UI'
+            Fill: =If(nfIsPMO, nfInfoBg, RGBA(0,0,0,0))
+            Align: =Align.Center
+      - pNavPortfolio:
+          Control: Classic/Button@2.2.0
+          Properties:
+            Text: ="Portfolio"
+            X: =Parent.Width - 560
+            Y: =12
+            Width: =120
+            Height: =40
+            OnSelect: =Navigate(scrPortfolio, ScreenTransition.None)
+            Size: =13
+            FontWeight: =FontWeight.Semibold
+            Font: =Font.'Segoe UI'
+            RadiusTopLeft: =4
+            RadiusTopRight: =4
+            RadiusBottomLeft: =4
+            RadiusBottomRight: =4
+            FocusedBorderThickness: =3
+            FocusedBorderColor: =nfBaseDarkest
+            Fill: =If(App.ActiveScreen = scrPortfolio, nfBlue, RGBA(0,0,0,0))
+            Color: =Color.White
+            HoverFill: =nfBlue
+            PressedFill: =nfNavy
+            BorderColor: =RGBA(0,0,0,0)
+            DisabledFill: =nfBaseLighter
+            DisabledColor: =nfBaseMedium
+      - pNavAnalytics:
+          Control: Classic/Button@2.2.0
+          Properties:
+            Text: ="Analytics"
+            X: =Parent.Width - 430
+            Y: =12
+            Width: =120
+            Height: =40
+            OnSelect: =Navigate(scrAnalytics, ScreenTransition.None)
+            Size: =13
+            FontWeight: =FontWeight.Semibold
+            Font: =Font.'Segoe UI'
+            RadiusTopLeft: =4
+            RadiusTopRight: =4
+            RadiusBottomLeft: =4
+            RadiusBottomRight: =4
+            FocusedBorderThickness: =3
+            FocusedBorderColor: =nfBaseDarkest
+            Fill: =If(App.ActiveScreen = scrAnalytics, nfBlue, RGBA(0,0,0,0))
+            Color: =Color.White
+            HoverFill: =nfBlue
+            PressedFill: =nfNavy
+            BorderColor: =RGBA(0,0,0,0)
+            DisabledFill: =nfBaseLighter
+            DisabledColor: =nfBaseMedium
+      - pNavMyWork:
+          Control: Classic/Button@2.2.0
+          Properties:
+            Text: ="My work"
+            X: =Parent.Width - 300
+            Y: =12
+            Width: =120
+            Height: =40
+            OnSelect: =Navigate(scrMyWork, ScreenTransition.None)
+            Size: =13
+            FontWeight: =FontWeight.Semibold
+            Font: =Font.'Segoe UI'
+            RadiusTopLeft: =4
+            RadiusTopRight: =4
+            RadiusBottomLeft: =4
+            RadiusBottomRight: =4
+            FocusedBorderThickness: =3
+            FocusedBorderColor: =nfBaseDarkest
+            Fill: =If(App.ActiveScreen = scrMyWork, nfBlue, RGBA(0,0,0,0))
+            Color: =Color.White
+            HoverFill: =nfBlue
+            PressedFill: =nfNavy
+            BorderColor: =RGBA(0,0,0,0)
+            DisabledFill: =nfBaseLighter
+            DisabledColor: =nfBaseMedium
+      - pHdrDemo:
+          Control: Label@2.5.1
+          Properties:
+            Text: ="Demo · fictitious data"
+            X: =Parent.Width - 170
+            Y: =0
+            Width: =150
+            Height: =64
+            Size: =11
+            Color: =nfAmber
+            Font: =Font.'Segoe UI'
+            Align: =Align.Right
+      - lblPortTitle:
+          Control: Label@2.5.1
+          Properties:
+            Text: ="Portfolio"
+            X: =24
+            Y: =76
+            Width: =400
+            Height: =36
+            Size: =22
+            Color: =nfBaseDarkest
+            Font: =Font.'Segoe UI'
+            FontWeight: =FontWeight.Semibold
+      - lblPortSub:
+          Control: Label@2.5.1
+          Properties:
+            Text: =CountRows(colProjects) & " active improvement projects · as of " & Text(Today(), "mmm d, yyyy")
+            X: =24
+            Y: =110
+            Width: =600
+            Height: =24
+            Size: =13
+            Color: =nfBaseMedium
+            Font: =Font.'Segoe UI'
+      - kpi1Box:
+          Control: Rectangle@2.3.0
+          Properties:
+            X: =24 + 0 * ((Parent.Width - 48 - 64) / 5 + 16)
+            Y: =146
+            Width: =(Parent.Width - 48 - 64) / 5
+            Height: =92
+            Fill: =nfPage
+            BorderColor: =nfBaseLighter
+            BorderThickness: =1
+      - kpi1Num:
+          Control: Label@2.5.1
+          Properties:
+            Text: =Text(CountRows(colProjects))
+            X: =24 + 0 * ((Parent.Width - 48 - 64) / 5 + 16) + 16
+            Y: =154
+            Width: =(Parent.Width - 48 - 64) / 5 - 32
+            Height: =44
+            Size: =28
+            Color: =nfBaseDarkest
+            Font: =Font.'Segoe UI'
+            FontWeight: =FontWeight.Semibold
+      - kpi1Cap:
+          Control: Label@2.5.1
+          Properties:
+            Text: ="Active projects"
+            X: =24 + 0 * ((Parent.Width - 48 - 64) / 5 + 16) + 16
+            Y: =198
+            Width: =(Parent.Width - 48 - 64) / 5 - 32
+            Height: =30
+            Size: =12
+            Color: =nfBaseDark
+            Font: =Font.'Segoe UI'
+      - kpi2Box:
+          Control: Rectangle@2.3.0
+          Properties:
+            X: =24 + 1 * ((Parent.Width - 48 - 64) / 5 + 16)
+            Y: =146
+            Width: =(Parent.Width - 48 - 64) / 5
+            Height: =92
+            Fill: =nfPage
+            BorderColor: =nfBaseLighter
+            BorderThickness: =1
+      - kpi2Num:
+          Control: Label@2.5.1
+          Properties:
+            Text: =Pct(CountIf(colProjects, CurrentHealth = "Green") / Max(1, CountRows(colProjects)))
+            X: =24 + 1 * ((Parent.Width - 48 - 64) / 5 + 16) + 16
+            Y: =154
+            Width: =(Parent.Width - 48 - 64) / 5 - 32
+            Height: =44
+            Size: =28
+            Color: =nfGreen
+            Font: =Font.'Segoe UI'
+            FontWeight: =FontWeight.Semibold
+      - kpi2Cap:
+          Control: Label@2.5.1
+          Properties:
+            Text: ="On track (green)"
+            X: =24 + 1 * ((Parent.Width - 48 - 64) / 5 + 16) + 16
+            Y: =198
+            Width: =(Parent.Width - 48 - 64) / 5 - 32
+            Height: =30
+            Size: =12
+            Color: =nfBaseDark
+            Font: =Font.'Segoe UI'
+      - kpi3Box:
+          Control: Rectangle@2.3.0
+          Properties:
+            X: =24 + 2 * ((Parent.Width - 48 - 64) / 5 + 16)
+            Y: =146
+            Width: =(Parent.Width - 48 - 64) / 5
+            Height: =92
+            Fill: =nfPage
+            BorderColor: =nfBaseLighter
+            BorderThickness: =1
+      - kpi3Num:
+          Control: Label@2.5.1
+          Properties:
+            Text: |-
+              =With({d: Filter(colMilestones, Status = "Done")}, Pct(CountIf(d, ActualDate <= PlannedDate) / Max(1, CountRows(d))))
+            X: =24 + 2 * ((Parent.Width - 48 - 64) / 5 + 16) + 16
+            Y: =154
+            Width: =(Parent.Width - 48 - 64) / 5 - 32
+            Height: =44
+            Size: =28
+            Color: =nfBaseDarkest
+            Font: =Font.'Segoe UI'
+            FontWeight: =FontWeight.Semibold
+      - kpi3Cap:
+          Control: Label@2.5.1
+          Properties:
+            Text: ="Milestones finished on time"
+            X: =24 + 2 * ((Parent.Width - 48 - 64) / 5 + 16) + 16
+            Y: =198
+            Width: =(Parent.Width - 48 - 64) / 5 - 32
+            Height: =30
+            Size: =12
+            Color: =nfBaseDark
+            Font: =Font.'Segoe UI'
+      - kpi4Box:
+          Control: Rectangle@2.3.0
+          Properties:
+            X: =24 + 3 * ((Parent.Width - 48 - 64) / 5 + 16)
+            Y: =146
+            Width: =(Parent.Width - 48 - 64) / 5
+            Height: =92
+            Fill: =nfPage
+            BorderColor: =nfBaseLighter
+            BorderThickness: =1
+      - kpi4Num:
+          Control: Label@2.5.1
+          Properties:
+            Text: =Text(CountIf(colOpenActions, DueDate < Today()))
+            X: =24 + 3 * ((Parent.Width - 48 - 64) / 5 + 16) + 16
+            Y: =154
+            Width: =(Parent.Width - 48 - 64) / 5 - 32
+            Height: =44
+            Size: =28
+            Color: =If(CountIf(colOpenActions, DueDate < Today()) > 0, nfRed, nfBaseDarkest)
+            Font: =Font.'Segoe UI'
+            FontWeight: =FontWeight.Semibold
+      - kpi4Cap:
+          Control: Label@2.5.1
+          Properties:
+            Text: ="Overdue actions"
+            X: =24 + 3 * ((Parent.Width - 48 - 64) / 5 + 16) + 16
+            Y: =198
+            Width: =(Parent.Width - 48 - 64) / 5 - 32
+            Height: =30
+            Size: =12
+            Color: =nfBaseDark
+            Font: =Font.'Segoe UI'
+      - kpi5Box:
+          Control: Rectangle@2.3.0
+          Properties:
+            X: =24 + 4 * ((Parent.Width - 48 - 64) / 5 + 16)
+            Y: =146
+            Width: =(Parent.Width - 48 - 64) / 5
+            Height: =92
+            Fill: =nfPage
+            BorderColor: =nfBaseLighter
+            BorderThickness: =1
+      - kpi5Num:
+          Control: Label@2.5.1
+          Properties:
+            Text: =Text(CountIf(colProjects, IsBlank(LastUpdateWeek) || LastUpdateWeek < nfReportWeek))
+            X: =24 + 4 * ((Parent.Width - 48 - 64) / 5 + 16) + 16
+            Y: =154
+            Width: =(Parent.Width - 48 - 64) / 5 - 32
+            Height: =44
+            Size: =28
+            Color: =If(CountIf(colProjects, IsBlank(LastUpdateWeek) || LastUpdateWeek < nfReportWeek) > 0, nfRed, nfBaseDarkest)
+            Font: =Font.'Segoe UI'
+            FontWeight: =FontWeight.Semibold
+      - kpi5Cap:
+          Control: Label@2.5.1
+          Properties:
+            Text: ="Missing last week's update"
+            X: =24 + 4 * ((Parent.Width - 48 - 64) / 5 + 16) + 16
+            Y: =198
+            Width: =(Parent.Width - 48 - 64) / 5 - 32
+            Height: =30
+            Size: =12
+            Color: =nfBaseDark
+            Font: =Font.'Segoe UI'
+      - drpService:
+          Control: Classic/DropDown@2.3.1
+          Properties:
+            Items: |-
+              =Table({Value: "All services"}, Sort(Distinct(colProjects, Service), Value))
+            X: =24
+            Y: =254
+            Width: =260
+            Height: =40
+            AccessibleLabel: ="Filter by service"
+            Size: =13
+            Fill: =nfPage
+            BorderColor: =nfBaseLight
+            ChevronBackground: =nfPage
+            ChevronFill: =nfBaseDarker
+            Color: =nfBaseDarkest
+            SelectionFill: =nfBlue
+            Font: =Font.'Segoe UI'
+      - drpHealth:
+          Control: Classic/DropDown@2.3.1
+          Properties:
+            Items: =["All", "Green", "Yellow", "Red"]
+            X: =300
+            Y: =254
+            Width: =180
+            Height: =40
+            AccessibleLabel: ="Filter by health"
+            Size: =13
+            Fill: =nfPage
+            BorderColor: =nfBaseLight
+            ChevronBackground: =nfPage
+            ChevronFill: =nfBaseDarker
+            Color: =nfBaseDarkest
+            SelectionFill: =nfBlue
+            Font: =Font.'Segoe UI'
+      - txtSearch:
+          Control: Classic/TextInput@2.3.2
+          Properties:
+            Default: =""
+            X: =496
+            Y: =254
+            Width: =320
+            Height: =40
+            AccessibleLabel: ="Search project or code"
+            HintText: ="Search project or code"
+            Size: =13
+            BorderColor: =nfBaseLight
+            HoverBorderColor: =nfBlue
+            FocusedBorderThickness: =3
+            Color: =nfBaseDarkest
+            Font: =Font.'Segoe UI'
+      - galProjects:
+          Control: Gallery@2.15.0
+          Variant: Vertical
+          Properties:
+            Items: |-
+              =Sort(
+                  Filter(
+                      colProjects,
+                      (drpService.Selected.Value = "All services" || Service = drpService.Selected.Value) &&
+                      (drpHealth.Selected.Value = "All" || CurrentHealth = drpHealth.Selected.Value) &&
+                      (IsBlank(txtSearch.Text) || txtSearch.Text in Title || txtSearch.Text in ProjectCode)
+                  ),
+                  ProjectCode
+              )
+            X: =24
+            Y: =306
+            Width: =Parent.Width - 48
+            Height: =Parent.Height - 322
+            WrapCount: =2
+            TemplateSize: =176
+            TemplatePadding: =8
+            BorderColor: =RGBA(0,0,0,0)
+            AccessibleLabel: ="Active projects"
+            OnSelect: =Set(varProject, ThisItem); Set(varTab, "Overview"); Navigate(scrProject, ScreenTransition.Fade)
+          Children:
+            - cardBg:
+                Control: Rectangle@2.3.0
+                Properties:
+                  X: =0
+                  Y: =0
+                  Width: =Parent.TemplateWidth
+                  Height: =Parent.TemplateHeight
+                  Fill: =nfPage
+                  BorderColor: =nfBaseLighter
+                  BorderThickness: =1
+                  OnSelect: =Select(Parent)
+            - cardAccent:
+                Control: Rectangle@2.3.0
+                Properties:
+                  X: =0
+                  Y: =0
+                  Width: =6
+                  Height: =Parent.TemplateHeight
+                  Fill: =HealthColor(ThisItem.CurrentHealth)
+                  BorderColor: =RGBA(0,0,0,0)
+            - cardCode:
+                Control: Label@2.5.1
+                Properties:
+                  Text: =ThisItem.ProjectCode & " · " & ThisItem.Service
+                  X: =20
+                  Y: =10
+                  Width: =Parent.TemplateWidth - 160
+                  Height: =22
+                  Size: =12
+                  Color: =nfBaseMedium
+                  Font: =Font.'Segoe UI'
+                  OnSelect: =Select(Parent)
+            - cardTitle:
+                Control: Label@2.5.1
+                Properties:
+                  Text: =ThisItem.Title
+                  X: =20
+                  Y: =32
+                  Width: =Parent.TemplateWidth - 160
+                  Height: =48
+                  Size: =16
+                  Color: =nfBaseDarkest
+                  Font: =Font.'Segoe UI'
+                  FontWeight: =FontWeight.Semibold
+                  OnSelect: =Select(Parent)
+                  VerticalAlign: =VerticalAlign.Top
+            - cardChip:
+                Control: Label@2.5.1
+                Properties:
+                  Text: =ThisItem.CurrentHealth
+                  X: =Parent.TemplateWidth - 124
+                  Y: =14
+                  Width: =104
+                  Height: =28
+                  Size: =12
+                  Color: =nfBaseDarkest
+                  Font: =Font.'Segoe UI'
+                  FontWeight: =FontWeight.Semibold
+                  Align: =Align.Center
+                  Fill: =HealthBg(ThisItem.CurrentHealth)
+                  BorderColor: =HealthColor(ThisItem.CurrentHealth)
+                  BorderThickness: =2
+            - cardPM:
+                Control: Label@2.5.1
+                Properties:
+                  Text: |-
+                    ="PM: " & ThisItem.PMName & " · " & ThisItem.Phase
+                  X: =20
+                  Y: =80
+                  Width: =Parent.TemplateWidth - 40
+                  Height: =24
+                  Size: =12
+                  Color: =nfBaseDark
+                  Font: =Font.'Segoe UI'
+                  OnSelect: =Select(Parent)
+            - cardBarBg:
+                Control: Rectangle@2.3.0
+                Properties:
+                  X: =20
+                  Y: =110
+                  Width: =Parent.TemplateWidth - 40
+                  Height: =8
+                  Fill: =nfBaseLighter
+                  BorderColor: =RGBA(0,0,0,0)
+            - cardBar:
+                Control: Rectangle@2.3.0
+                Properties:
+                  X: =20
+                  Y: =110
+                  Width: =(Parent.TemplateWidth - 40) * MetricProgress(ThisItem.MetricBaseline, ThisItem.MetricTarget, ThisItem.MetricCurrent)
+                  Height: =8
+                  Fill: =nfBlue
+                  BorderColor: =RGBA(0,0,0,0)
+            - cardMetric:
+                Control: Label@2.5.1
+                Properties:
+                  Text: |-
+                    =ThisItem.MetricName & ": " & ThisItem.MetricCurrent & " (target " & ThisItem.MetricTarget & ")"
+                  X: =20
+                  Y: =122
+                  Width: =Parent.TemplateWidth - 40
+                  Height: =22
+                  Size: =12
+                  Color: =nfBaseDarker
+                  Font: =Font.'Segoe UI'
+                  OnSelect: =Select(Parent)
+            - cardStale:
+                Control: Label@2.5.1
+                Properties:
+                  Text: =If(IsBlank(ThisItem.LastUpdateWeek) || ThisItem.LastUpdateWeek < nfReportWeek, "No update for week of " & Text(nfReportWeek, "mmm d"), "Updated week of " & Text(ThisItem.LastUpdateWeek, "mmm d"))
+                  X: =20
+                  Y: =144
+                  Width: =Parent.TemplateWidth - 40
+                  Height: =22
+                  Size: =12
+                  Color: =If(IsBlank(ThisItem.LastUpdateWeek) || ThisItem.LastUpdateWeek < nfReportWeek, nfRed, nfBaseMedium)
+                  Font: =Font.'Segoe UI'
+                  OnSelect: =Select(Parent)

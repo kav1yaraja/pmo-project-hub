@@ -1,0 +1,49 @@
+App:
+  Properties:
+    Formulas: |-
+      =// ---------- Theme: VA Design System (VADS) neutrals + alert backgrounds ----------
+      nfBaseDarkest = ColorValue("#1b1b1b");
+      nfBaseDarker  = ColorValue("#3d4551");
+      nfBaseDark    = ColorValue("#565c65");
+      nfBaseMedium  = ColorValue("#71767a");
+      nfBaseLight   = ColorValue("#a9aeb1");
+      nfBaseLighter = ColorValue("#dfe1e2");
+      nfMuted       = ColorValue("#f0f0f0");
+      nfPage        = ColorValue("#ffffff");
+      nfInfoBg      = ColorValue("#e7f6f8");
+      nfErrorBg     = ColorValue("#f4e3db");
+      nfSuccessBg   = ColorValue("#ecf3ec");
+      nfWarningBg   = ColorValue("#faf3d1");
+      // Accents (header, buttons, chart bars)
+      nfNavy  = ColorValue("#112E51");
+      nfBlue  = ColorValue("#0071BC");
+      nfGreen = ColorValue("#2E8540");
+      nfAmber = ColorValue("#FDB81E");
+      nfRed   = ColorValue("#CD2026");
+      
+      // ---------- User + role ----------
+      nfMe    = Lower(User().Email);
+      nfIsPMO = !IsBlank(LookUp(PMOTeam, Title = nfMe));
+      
+      // ---------- Reporting calendar (weeks start Monday) ----------
+      nfThisWeek   = DateAdd(Today(), -(Weekday(Today(), StartOfWeek.Monday) - 1), TimeUnit.Days);
+      nfReportWeek = DateAdd(nfThisWeek, -7, TimeUnit.Days);
+      
+      // ---------- Reusable logic (user-defined functions) ----------
+      HealthColor(h: Text): Color = Switch(h, "Green", nfGreen, "Yellow", nfAmber, "Red", nfRed, nfBaseDark);
+      HealthBg(h: Text): Color = Switch(h, "Green", nfSuccessBg, "Yellow", nfWarningBg, "Red", nfErrorBg, nfInfoBg);
+      // Share of the way from baseline to target (0-1); works whether lower or higher is better
+      MetricProgress(base: Number, target: Number, current: Number): Number =
+          If(base = target, 1, Max(0, Min(1, (base - current) / (base - target))));
+      // Positive = late, negative = early
+      SlipDays(planned: DateTime, actualOrForecast: DateTime): Number = DateDiff(planned, actualOrForecast, TimeUnit.Days);
+      // Share (0-1) shown as a whole percent (Power Fx Text with a percent format does not scale by 100)
+      Pct(x: Number): Text = Text(Round(x * 100, 0)) & "%";
+    OnStart: |-
+      =Set(varTab, "Overview");
+      Set(varBusy, false);
+      ClearCollect(colPeopleRaw, ShowColumns(ActionItems, OwnerName, OwnerEmail));
+      Collect(colPeopleRaw, {OwnerName: User().FullName, OwnerEmail: nfMe});
+      ClearCollect(colPeople, Sort(GroupBy(colPeopleRaw, OwnerEmail, OwnerName, Rows), OwnerName))
+    StartScreen: =Switch(Param("screen"), "update", scrUpdate, "project", scrProject, scrPortfolio)
+    Theme: =PowerAppsTheme

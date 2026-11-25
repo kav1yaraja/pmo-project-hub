@@ -1,0 +1,515 @@
+Screens:
+  scrUpdate:
+    Properties:
+      Fill: =nfMuted
+      OnVisible: |-
+        =If(IsBlank(varProject) && !IsBlank(Param("projectId")),
+           Set(varProject, LookUp(Projects, ID = Value(Param("projectId")))));
+        ClearCollect(colPU, Sort(Filter(StatusUpdates, ProjectID = varProject.ID), WeekOf, SortOrder.Ascending));
+        Set(varLast, Last(colPU));
+        Reset(drpUpdHealth); Reset(sldPercent); Reset(txtMetric); Reset(txtNext)
+    Children:
+      - uHdrBar:
+          Control: Rectangle@2.3.0
+          Properties:
+            X: =0
+            Y: =0
+            Width: =Parent.Width
+            Height: =64
+            Fill: =nfNavy
+            BorderColor: =RGBA(0,0,0,0)
+      - uHdrTitle:
+          Control: Label@2.5.1
+          Properties:
+            Text: ="PMO Project Hub"
+            X: =24
+            Y: =0
+            Width: =300
+            Height: =64
+            Size: =20
+            Color: =Color.White
+            Font: =Font.'Segoe UI'
+            FontWeight: =FontWeight.Semibold
+      - uHdrPMO:
+          Control: Label@2.5.1
+          Properties:
+            Text: =If(nfIsPMO, "PMO admin", "")
+            X: =330
+            Y: =20
+            Width: =100
+            Height: =24
+            Size: =11
+            Color: =nfBaseDarkest
+            Font: =Font.'Segoe UI'
+            Fill: =If(nfIsPMO, nfInfoBg, RGBA(0,0,0,0))
+            Align: =Align.Center
+      - uNavPortfolio:
+          Control: Classic/Button@2.2.0
+          Properties:
+            Text: ="Portfolio"
+            X: =Parent.Width - 560
+            Y: =12
+            Width: =120
+            Height: =40
+            OnSelect: =Navigate(scrPortfolio, ScreenTransition.None)
+            Size: =13
+            FontWeight: =FontWeight.Semibold
+            Font: =Font.'Segoe UI'
+            RadiusTopLeft: =4
+            RadiusTopRight: =4
+            RadiusBottomLeft: =4
+            RadiusBottomRight: =4
+            FocusedBorderThickness: =3
+            FocusedBorderColor: =nfBaseDarkest
+            Fill: =If(App.ActiveScreen = scrPortfolio, nfBlue, RGBA(0,0,0,0))
+            Color: =Color.White
+            HoverFill: =nfBlue
+            PressedFill: =nfNavy
+            BorderColor: =RGBA(0,0,0,0)
+            DisabledFill: =nfBaseLighter
+            DisabledColor: =nfBaseMedium
+      - uNavAnalytics:
+          Control: Classic/Button@2.2.0
+          Properties:
+            Text: ="Analytics"
+            X: =Parent.Width - 430
+            Y: =12
+            Width: =120
+            Height: =40
+            OnSelect: =Navigate(scrAnalytics, ScreenTransition.None)
+            Size: =13
+            FontWeight: =FontWeight.Semibold
+            Font: =Font.'Segoe UI'
+            RadiusTopLeft: =4
+            RadiusTopRight: =4
+            RadiusBottomLeft: =4
+            RadiusBottomRight: =4
+            FocusedBorderThickness: =3
+            FocusedBorderColor: =nfBaseDarkest
+            Fill: =If(App.ActiveScreen = scrAnalytics, nfBlue, RGBA(0,0,0,0))
+            Color: =Color.White
+            HoverFill: =nfBlue
+            PressedFill: =nfNavy
+            BorderColor: =RGBA(0,0,0,0)
+            DisabledFill: =nfBaseLighter
+            DisabledColor: =nfBaseMedium
+      - uNavMyWork:
+          Control: Classic/Button@2.2.0
+          Properties:
+            Text: ="My work"
+            X: =Parent.Width - 300
+            Y: =12
+            Width: =120
+            Height: =40
+            OnSelect: =Navigate(scrMyWork, ScreenTransition.None)
+            Size: =13
+            FontWeight: =FontWeight.Semibold
+            Font: =Font.'Segoe UI'
+            RadiusTopLeft: =4
+            RadiusTopRight: =4
+            RadiusBottomLeft: =4
+            RadiusBottomRight: =4
+            FocusedBorderThickness: =3
+            FocusedBorderColor: =nfBaseDarkest
+            Fill: =If(App.ActiveScreen = scrMyWork, nfBlue, RGBA(0,0,0,0))
+            Color: =Color.White
+            HoverFill: =nfBlue
+            PressedFill: =nfNavy
+            BorderColor: =RGBA(0,0,0,0)
+            DisabledFill: =nfBaseLighter
+            DisabledColor: =nfBaseMedium
+      - uHdrDemo:
+          Control: Label@2.5.1
+          Properties:
+            Text: ="Demo · fictitious data"
+            X: =Parent.Width - 170
+            Y: =0
+            Width: =150
+            Height: =64
+            Size: =11
+            Color: =nfAmber
+            Font: =Font.'Segoe UI'
+            Align: =Align.Right
+      - btnUpdBack:
+          Control: Classic/Button@2.2.0
+          Properties:
+            Text: ="← Project"
+            X: =24
+            Y: =76
+            Width: =130
+            Height: =36
+            OnSelect: =Navigate(scrProject, ScreenTransition.Fade)
+            Size: =13
+            FontWeight: =FontWeight.Semibold
+            Font: =Font.'Segoe UI'
+            RadiusTopLeft: =4
+            RadiusTopRight: =4
+            RadiusBottomLeft: =4
+            RadiusBottomRight: =4
+            FocusedBorderThickness: =3
+            FocusedBorderColor: =nfBaseDarkest
+            Fill: =nfPage
+            Color: =nfBlue
+            HoverFill: =nfInfoBg
+            PressedFill: =nfInfoBg
+            HoverColor: =nfNavy
+            BorderColor: =nfBlue
+            BorderThickness: =1
+            DisabledFill: =nfPage
+            DisabledColor: =nfBaseLight
+      - lblFor:
+          Control: Label@2.5.1
+          Properties:
+            Text: ="Weekly update · " & varProject.ProjectCode & " " & varProject.Title
+            X: =24
+            Y: =118
+            Width: =Parent.Width - 48
+            Height: =34
+            Size: =20
+            Color: =nfBaseDarkest
+            Font: =Font.'Segoe UI'
+            FontWeight: =FontWeight.Semibold
+      - lblUpdHint:
+          Control: Label@2.5.1
+          Properties:
+            Text: ="Last week's values are filled in. Change only what moved; takes about 2 minutes."
+            X: =24
+            Y: =152
+            Width: =Parent.Width - 48
+            Height: =24
+            Size: =12
+            Color: =nfBaseMedium
+            Font: =Font.'Segoe UI'
+      - updCard:
+          Control: Rectangle@2.3.0
+          Properties:
+            X: =24
+            Y: =184
+            Width: =Parent.Width - 48
+            Height: =Parent.Height - 200
+            Fill: =nfPage
+            BorderColor: =nfBaseLighter
+            BorderThickness: =1
+      - lblWeek:
+          Control: Label@2.5.1
+          Properties:
+            Text: ="Week of (Monday)"
+            X: =40
+            Y: =196
+            Width: =Parent.Width / 2 - 48
+            Height: =22
+            Size: =13
+            Color: =nfBaseDarker
+            Font: =Font.'Segoe UI'
+            FontWeight: =FontWeight.Semibold
+      - dpWeek:
+          Control: Classic/DatePicker@2.6.0
+          Properties:
+            DefaultDate: =nfReportWeek
+            X: =40
+            Y: =220
+            Width: =240
+            Height: =40
+            AccessibleLabel: ="Week of (Monday)"
+            Size: =13
+            BorderColor: =nfBaseLight
+            IconBackground: =nfBlue
+      - lblExisting:
+          Control: Label@2.5.1
+          Properties:
+            Text: ="An update already exists for this week; saving will replace it."
+            X: =40
+            Y: =264
+            Width: =Parent.Width / 2 - 48
+            Height: =28
+            Size: =12
+            Color: =nfBaseDarkest
+            Font: =Font.'Segoe UI'
+            Fill: =nfWarningBg
+            PaddingLeft: =8
+            Visible: =!IsBlank(LookUp(colPU, Text(WeekOf, "yyyy-mm-dd") = Text(dpWeek.SelectedDate, "yyyy-mm-dd")))
+      - lblHealth:
+          Control: Label@2.5.1
+          Properties:
+            Text: ="Overall health"
+            X: =40
+            Y: =300
+            Width: =Parent.Width / 2 - 48
+            Height: =22
+            Size: =13
+            Color: =nfBaseDarker
+            Font: =Font.'Segoe UI'
+            FontWeight: =FontWeight.Semibold
+      - drpUpdHealth:
+          Control: Classic/DropDown@2.3.1
+          Properties:
+            Items: =["Green", "Yellow", "Red"]
+            X: =40
+            Y: =324
+            Width: =240
+            Height: =40
+            AccessibleLabel: ="Overall health"
+            Size: =13
+            Fill: =nfPage
+            BorderColor: =nfBaseLight
+            ChevronBackground: =nfPage
+            ChevronFill: =nfBaseDarker
+            Color: =nfBaseDarkest
+            SelectionFill: =nfBlue
+            Font: =Font.'Segoe UI'
+            Default: =Coalesce(varLast.Health, "Green")
+      - chipUpdHealth:
+          Control: Label@2.5.1
+          Properties:
+            Text: =drpUpdHealth.Selected.Value
+            X: =296
+            Y: =330
+            Width: =104
+            Height: =28
+            Size: =12
+            Color: =nfBaseDarkest
+            Font: =Font.'Segoe UI'
+            FontWeight: =FontWeight.Semibold
+            Align: =Align.Center
+            Fill: =HealthBg(drpUpdHealth.Selected.Value)
+            BorderColor: =HealthColor(drpUpdHealth.Selected.Value)
+            BorderThickness: =2
+      - lblPct:
+          Control: Label@2.5.1
+          Properties:
+            Text: |-
+              ="Percent complete: " & sldPercent.Value & "%"
+            X: =40
+            Y: =376
+            Width: =Parent.Width / 2 - 48
+            Height: =22
+            Size: =13
+            Color: =nfBaseDarker
+            Font: =Font.'Segoe UI'
+            FontWeight: =FontWeight.Semibold
+      - sldPercent:
+          Control: Classic/Slider@2.1.0
+          Properties:
+            Min: =0
+            Max: =100
+            Default: =Coalesce(varLast.PercentComplete, 0)
+            X: =40
+            Y: =400
+            Width: =400
+            Height: =36
+            AccessibleLabel: ="Percent complete"
+            ValueFill: =nfBlue
+            RailFill: =nfBaseLighter
+      - lblMetric:
+          Control: Label@2.5.1
+          Properties:
+            Text: =varProject.MetricName & " this week (target " & varProject.MetricTarget & ")"
+            X: =40
+            Y: =448
+            Width: =Parent.Width / 2 - 48
+            Height: =22
+            Size: =13
+            Color: =nfBaseDarker
+            Font: =Font.'Segoe UI'
+            FontWeight: =FontWeight.Semibold
+      - txtMetric:
+          Control: Classic/TextInput@2.3.2
+          Properties:
+            Default: =Coalesce(varLast.MetricValue, varProject.MetricBaseline)
+            X: =40
+            Y: =472
+            Width: =240
+            Height: =40
+            AccessibleLabel: ="Metric value this week"
+            HintText: =""
+            Size: =13
+            BorderColor: =nfBaseLight
+            HoverBorderColor: =nfBlue
+            FocusedBorderThickness: =3
+            Color: =nfBaseDarkest
+            Font: =Font.'Segoe UI'
+            Format: =TextFormat.Number
+      - lblAcc:
+          Control: Label@2.5.1
+          Properties:
+            Text: ="Accomplishments (required)"
+            X: =Parent.Width / 2 + 12
+            Y: =196
+            Width: =Parent.Width / 2 - 36
+            Height: =22
+            Size: =13
+            Color: =nfBaseDarker
+            Font: =Font.'Segoe UI'
+            FontWeight: =FontWeight.Semibold
+      - txtAcc:
+          Control: Classic/TextInput@2.3.2
+          Properties:
+            Default: =""
+            X: =Parent.Width / 2 + 12
+            Y: =220
+            Width: =Parent.Width / 2 - 36
+            Height: =110
+            AccessibleLabel: ="Accomplishments"
+            HintText: ="What got done this week?"
+            Size: =13
+            BorderColor: =nfBaseLight
+            HoverBorderColor: =nfBlue
+            FocusedBorderThickness: =3
+            Color: =nfBaseDarkest
+            Font: =Font.'Segoe UI'
+            Mode: =TextMode.MultiLine
+      - lblNext:
+          Control: Label@2.5.1
+          Properties:
+            Text: ="Next steps"
+            X: =Parent.Width / 2 + 12
+            Y: =340
+            Width: =Parent.Width / 2 - 36
+            Height: =22
+            Size: =13
+            Color: =nfBaseDarker
+            Font: =Font.'Segoe UI'
+            FontWeight: =FontWeight.Semibold
+      - txtNext:
+          Control: Classic/TextInput@2.3.2
+          Properties:
+            Default: =Coalesce(varLast.NextSteps, "")
+            X: =Parent.Width / 2 + 12
+            Y: =364
+            Width: =Parent.Width / 2 - 36
+            Height: =90
+            AccessibleLabel: ="Next steps"
+            HintText: =""
+            Size: =13
+            BorderColor: =nfBaseLight
+            HoverBorderColor: =nfBlue
+            FocusedBorderThickness: =3
+            Color: =nfBaseDarkest
+            Font: =Font.'Segoe UI'
+            Mode: =TextMode.MultiLine
+      - lblBlockers:
+          Control: Label@2.5.1
+          Properties:
+            Text: ="Blockers (required if Yellow or Red)"
+            X: =Parent.Width / 2 + 12
+            Y: =464
+            Width: =Parent.Width / 2 - 36
+            Height: =22
+            Size: =13
+            Color: =If(drpUpdHealth.Selected.Value <> "Green" && Len(Trim(txtBlockers.Text)) < 5, nfRed, nfBaseDarker)
+            Font: =Font.'Segoe UI'
+            FontWeight: =FontWeight.Semibold
+      - txtBlockers:
+          Control: Classic/TextInput@2.3.2
+          Properties:
+            Default: =""
+            X: =Parent.Width / 2 + 12
+            Y: =488
+            Width: =Parent.Width / 2 - 36
+            Height: =90
+            AccessibleLabel: ="Blockers"
+            HintText: ="What is in the way, and what help do you need?"
+            Size: =13
+            BorderColor: =nfBaseLight
+            HoverBorderColor: =nfBlue
+            FocusedBorderThickness: =3
+            Color: =nfBaseDarkest
+            Font: =Font.'Segoe UI'
+            Mode: =TextMode.MultiLine
+      - lblReq:
+          Control: Label@2.5.1
+          Properties:
+            Text: |-
+              =If(btnSubmitUpdate.DisplayMode = DisplayMode.Disabled, "To submit: add accomplishments and a metric value, and describe blockers if health is not Green.", "")
+            X: =40
+            Y: =Parent.Height - 76
+            Width: =Parent.Width - 400
+            Height: =40
+            Size: =12
+            Color: =nfBaseDark
+            Font: =Font.'Segoe UI'
+      - btnCancelUpdate:
+          Control: Classic/Button@2.2.0
+          Properties:
+            Text: ="Cancel"
+            X: =Parent.Width - 340
+            Y: =Parent.Height - 80
+            Width: =130
+            Height: =44
+            OnSelect: =Navigate(scrProject, ScreenTransition.Fade)
+            Size: =13
+            FontWeight: =FontWeight.Semibold
+            Font: =Font.'Segoe UI'
+            RadiusTopLeft: =4
+            RadiusTopRight: =4
+            RadiusBottomLeft: =4
+            RadiusBottomRight: =4
+            FocusedBorderThickness: =3
+            FocusedBorderColor: =nfBaseDarkest
+            Fill: =nfPage
+            Color: =nfBlue
+            HoverFill: =nfInfoBg
+            PressedFill: =nfInfoBg
+            HoverColor: =nfNavy
+            BorderColor: =nfBlue
+            BorderThickness: =1
+            DisabledFill: =nfPage
+            DisabledColor: =nfBaseLight
+      - btnSubmitUpdate:
+          Control: Classic/Button@2.2.0
+          Properties:
+            Text: ="Submit update"
+            X: =Parent.Width - 196
+            Y: =Parent.Height - 80
+            Width: =160
+            Height: =44
+            OnSelect: |-
+              =With(
+                  {wExisting: LookUp(colPU, Text(WeekOf, "yyyy-mm-dd") = Text(dpWeek.SelectedDate, "yyyy-mm-dd"))},
+                  Patch(
+                      StatusUpdates,
+                      If(IsBlank(wExisting), Defaults(StatusUpdates), wExisting),
+                      {
+                          Title: varProject.ProjectCode & " week of " & Text(dpWeek.SelectedDate, "m/d/yyyy"),
+                          ProjectID: varProject.ID, WeekOf: dpWeek.SelectedDate,
+                          Health: drpUpdHealth.Selected.Value, PercentComplete: sldPercent.Value,
+                          MetricValue: Value(txtMetric.Text),
+                          Accomplishments: txtAcc.Text, NextSteps: txtNext.Text, Blockers: txtBlockers.Text,
+                          SubmittedBy: User().FullName
+                      }
+                  )
+              );
+              If(
+                  IsEmpty(Errors(StatusUpdates)),
+                  If(IsBlank(varProject.LastUpdateWeek) || dpWeek.SelectedDate >= varProject.LastUpdateWeek,
+                     Patch(Projects, LookUp(Projects, ID = varProject.ID), {
+                         CurrentHealth: drpUpdHealth.Selected.Value, PercentComplete: sldPercent.Value,
+                         MetricCurrent: Value(txtMetric.Text), LastUpdateWeek: dpWeek.SelectedDate }));
+                  Set(varProject, LookUp(Projects, ID = varProject.ID));
+                  Reset(txtAcc); Reset(txtBlockers);
+                  Notify("Update saved. Thank you!", NotificationType.Success);
+                  Navigate(scrProject, ScreenTransition.Fade),
+                  Notify("Couldn't save: " & First(Errors(StatusUpdates)).Message, NotificationType.Error)
+              )
+            Size: =13
+            FontWeight: =FontWeight.Semibold
+            Font: =Font.'Segoe UI'
+            RadiusTopLeft: =4
+            RadiusTopRight: =4
+            RadiusBottomLeft: =4
+            RadiusBottomRight: =4
+            FocusedBorderThickness: =3
+            FocusedBorderColor: =nfBaseDarkest
+            Fill: =nfBlue
+            Color: =Color.White
+            HoverFill: =nfNavy
+            PressedFill: =nfNavy
+            BorderColor: =nfBlue
+            DisabledFill: =nfBaseLighter
+            DisabledColor: =nfBaseMedium
+            DisplayMode: |-
+              =If(
+                  IsBlank(dpWeek.SelectedDate) || IsBlank(txtMetric.Text) || IsBlank(Trim(txtAcc.Text)) ||
+                  (drpUpdHealth.Selected.Value <> "Green" && Len(Trim(txtBlockers.Text)) < 5),
+                  DisplayMode.Disabled, DisplayMode.Edit
+              )

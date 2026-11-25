@@ -1,0 +1,346 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_onedriveforbusiness": {
+        "runtimeSource": "invoker",
+        "connection": {
+          "connectionReferenceLogicalName": "kr_sharedonedriveforbusiness_a3d82"
+        },
+        "api": {
+          "name": "shared_onedriveforbusiness"
+        }
+      },
+      "shared_sharepointonline": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "kr_sharedsharepointonline_b8320"
+        },
+        "api": {
+          "name": "shared_sharepointonline"
+        }
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        }
+      },
+      "triggers": {
+        "manual": {
+          "type": "Request",
+          "kind": "PowerAppV2",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "number": {
+                  "title": "ProjectID",
+                  "type": "number",
+                  "x-ms-dynamically-added": true,
+                  "description": "ID of the project in the Projects list",
+                  "x-ms-content-hint": "NUMBER"
+                }
+              },
+              "required": [
+                "number"
+              ]
+            }
+          }
+        }
+      },
+      "actions": {
+        "Get_project": {
+          "runAfter": {},
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline",
+              "connectionName": "shared_sharepointonline",
+              "operationId": "GetItem"
+            },
+            "parameters": {
+              "dataset": "https://contoso.sharepoint.com/sites/SystemsRedesignDemo",
+              "table": "8085c073-810e-4211-9a9c-ca685a249def",
+              "id": "@triggerBody()['number']"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Get_latest_update": {
+          "runAfter": {
+            "Get_project": [
+              "Succeeded"
+            ]
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline",
+              "connectionName": "shared_sharepointonline",
+              "operationId": "GetItems"
+            },
+            "parameters": {
+              "dataset": "https://contoso.sharepoint.com/sites/SystemsRedesignDemo",
+              "table": "599d9ad7-25ce-4a27-82df-19581bfd543c",
+              "$filter": "field_1 eq @{triggerBody()['number']}",
+              "$orderby": "field_2 desc",
+              "$top": 1
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Get_milestones": {
+          "runAfter": {
+            "Get_latest_update": [
+              "Succeeded"
+            ]
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline",
+              "connectionName": "shared_sharepointonline",
+              "operationId": "GetItems"
+            },
+            "parameters": {
+              "dataset": "https://contoso.sharepoint.com/sites/SystemsRedesignDemo",
+              "table": "4e2a767c-d3a8-4be7-b8a6-1cf564a5425a",
+              "$filter": "field_1 eq @{triggerBody()['number']}",
+              "$orderby": "field_2 asc"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Get_open_risks": {
+          "runAfter": {
+            "Get_milestones": [
+              "Succeeded"
+            ]
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline",
+              "connectionName": "shared_sharepointonline",
+              "operationId": "GetItems"
+            },
+            "parameters": {
+              "dataset": "https://contoso.sharepoint.com/sites/SystemsRedesignDemo",
+              "table": "5c16eed3-1a7a-4f8f-91c7-3b4ecdfbc553",
+              "$filter": "field_1 eq @{triggerBody()['number']} and field_7 ne 'Closed'",
+              "$orderby": "field_4 desc"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Get_open_actions": {
+          "runAfter": {
+            "Get_open_risks": [
+              "Succeeded"
+            ]
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline",
+              "connectionName": "shared_sharepointonline",
+              "operationId": "GetItems"
+            },
+            "parameters": {
+              "dataset": "https://contoso.sharepoint.com/sites/SystemsRedesignDemo",
+              "table": "21487070-0ede-4f95-8c7a-694b4bbe5b09",
+              "$filter": "field_1 eq @{triggerBody()['number']} and field_5 eq 'Open'",
+              "$orderby": "field_4 asc"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Milestone_rows": {
+          "runAfter": {
+            "Get_open_actions": [
+              "Succeeded"
+            ]
+          },
+          "type": "Select",
+          "inputs": {
+            "from": "@outputs('Get_milestones')?['body/value']",
+            "select": "@concat('<tr><td>', item()?['Title'], '</td><td>', formatDateTime(item()?['field_3'], 'MMM d'), '</td><td>', if(empty(item()?['field_5']), concat('Forecast ', formatDateTime(item()?['field_4'], 'MMM d')), concat('Done ', formatDateTime(item()?['field_5'], 'MMM d'))), '</td><td>', item()?['field_6'], '</td><td style=\"font-weight:600;color:', if(greater(div(sub(ticks(coalesce(item()?['field_5'], item()?['field_4'])), ticks(item()?['field_3'])), 864000000000), 0), '#CD2026', '#2E8540'), '\">', if(greater(div(sub(ticks(coalesce(item()?['field_5'], item()?['field_4'])), ticks(item()?['field_3'])), 864000000000), 0), concat('+', string(div(sub(ticks(coalesce(item()?['field_5'], item()?['field_4'])), ticks(item()?['field_3'])), 864000000000)), ' days'), 'On time'), '</td></tr>')"
+          }
+        },
+        "Risk_rows": {
+          "runAfter": {
+            "Milestone_rows": [
+              "Succeeded"
+            ]
+          },
+          "type": "Select",
+          "inputs": {
+            "from": "@outputs('Get_open_risks')?['body/value']",
+            "select": "@concat('<tr><td style=\"font-weight:600\">', string(item()?['field_4']), '</td><td>', item()?['Title'], '</td><td>', item()?['field_5'], '</td><td>', item()?['field_6'], '</td><td>', item()?['field_7'], '</td></tr>')"
+          }
+        },
+        "Action_rows": {
+          "runAfter": {
+            "Risk_rows": [
+              "Succeeded"
+            ]
+          },
+          "type": "Select",
+          "inputs": {
+            "from": "@outputs('Get_open_actions')?['body/value']",
+            "select": "@concat('<tr><td>', item()?['Title'], '</td><td>', item()?['field_2'], '</td><td style=\"', if(less(ticks(item()?['field_4']), ticks(utcNow())), 'color:#CD2026;font-weight:600', ''), '\">', formatDateTime(item()?['field_4'], 'MMM d'), if(less(ticks(item()?['field_4']), ticks(utcNow())), ' (overdue)', ''), '</td></tr>')"
+          }
+        },
+        "Report_HTML": {
+          "runAfter": {
+            "Action_rows": [
+              "Succeeded"
+            ]
+          },
+          "type": "Compose",
+          "inputs": "<!DOCTYPE html><html><head><meta charset=\"utf-8\"><style>body{font-family:'Segoe UI',Arial,sans-serif;color:#3d4551;margin:32px;font-size:13px}h1{color:#112E51;margin:0 0 4px;font-size:22px}h2{color:#1b1b1b;font-size:15px;margin:22px 0 8px;border-bottom:1px solid #dfe1e2;padding-bottom:4px}.muted{color:#71767a}.chip{display:inline-block;padding:3px 12px;font-weight:600;color:#1b1b1b}table{border-collapse:collapse;width:100%}th{background:#f0f0f0;text-align:left;color:#1b1b1b}th,td{padding:6px 8px;border-bottom:1px solid #dfe1e2;vertical-align:top;font-size:12px}h2,table{page-break-inside:avoid}h2{page-break-after:avoid}.bar{background:#dfe1e2;height:10px;width:100%}.fill{background:#0071BC;height:10px}.grid{display:flex;gap:16px}.grid div{flex:1;background:#f0f0f0;padding:10px}</style></head><body><div class=\"muted\">PMO Project Hub · Weekly status report · @{formatDateTime(convertFromUtc(utcNow(), 'Pacific Standard Time'), 'MMM d, yyyy')} · Demo, fictitious data</div><h1>@{outputs('Get_project')?['body']?['field_1']} · @{outputs('Get_project')?['body']?['Title']}</h1><div>PM: @{outputs('Get_project')?['body']?['field_6']} · Sponsor: @{outputs('Get_project')?['body']?['field_8']} · Phase: @{outputs('Get_project')?['body']?['field_5']} · @{outputs('Get_project')?['body']?['field_2']} · @{outputs('Get_project')?['body']?['field_3']}</div><p><span class=\"chip\" style=\"background:@{if(equals(outputs('Get_project')?['body']?['field_16'], 'Green'), '#ecf3ec', if(equals(outputs('Get_project')?['body']?['field_16'], 'Yellow'), '#faf3d1', '#f4e3db'))};border:2px solid @{if(equals(outputs('Get_project')?['body']?['field_16'], 'Green'), '#2E8540', if(equals(outputs('Get_project')?['body']?['field_16'], 'Yellow'), '#FDB81E', '#CD2026'))}\">@{outputs('Get_project')?['body']?['field_16']}</span> &nbsp; @{outputs('Get_project')?['body']?['field_17']}% complete</p><h2>Target metric: @{outputs('Get_project')?['body']?['field_12']}</h2><p>Baseline @{outputs('Get_project')?['body']?['field_13']} → now <b>@{outputs('Get_project')?['body']?['field_15']}</b> → target @{outputs('Get_project')?['body']?['field_14']} · <b>@{formatNumber(if(equals(float(string(outputs('Get_project')?['body']?['field_13'])), float(string(outputs('Get_project')?['body']?['field_14']))), 100, mul(100, max(0, min(1, div(sub(float(string(outputs('Get_project')?['body']?['field_13'])), float(string(outputs('Get_project')?['body']?['field_15']))), sub(float(string(outputs('Get_project')?['body']?['field_13'])), float(string(outputs('Get_project')?['body']?['field_14'])))))))), '0')}% of the way to target</b></p><div class=\"bar\"><div class=\"fill\" style=\"width:@{formatNumber(if(equals(float(string(outputs('Get_project')?['body']?['field_13'])), float(string(outputs('Get_project')?['body']?['field_14']))), 100, mul(100, max(0, min(1, div(sub(float(string(outputs('Get_project')?['body']?['field_13'])), float(string(outputs('Get_project')?['body']?['field_15']))), sub(float(string(outputs('Get_project')?['body']?['field_13'])), float(string(outputs('Get_project')?['body']?['field_14'])))))))), '0')}%\"></div></div><h2>Latest update (week of @{formatDateTime(first(outputs('Get_latest_update')?['body/value'])?['field_2'], 'MMM d')})</h2><div class=\"grid\"><div><b>Done</b><br>@{first(outputs('Get_latest_update')?['body/value'])?['field_6']}</div><div><b>Next</b><br>@{first(outputs('Get_latest_update')?['body/value'])?['field_7']}</div><div><b>Blockers</b><br>@{coalesce(first(outputs('Get_latest_update')?['body/value'])?['field_8'], 'None')}</div></div><h2>Milestones</h2><table><tr><th>Milestone</th><th>Planned</th><th>Forecast / actual</th><th>Status</th><th>Variance</th></tr>@{join(body('Milestone_rows'), '')}</table><h2>Open risks (score = likelihood × impact)</h2><table><tr><th>Score</th><th>Risk</th><th>Mitigation</th><th>Owner</th><th>Status</th></tr>@{join(body('Risk_rows'), '')}</table><h2>Open actions</h2><table><tr><th>Action</th><th>Owner</th><th>Due</th></tr>@{join(body('Action_rows'), '')}</table><p class=\"muted\" style=\"margin-top:24px\">Generated by Power Automate from SharePoint lists (Projects, StatusUpdates, Milestones, Risks, ActionItems).</p></body></html>"
+        },
+        "Report_name": {
+          "runAfter": {
+            "Report_HTML": [
+              "Succeeded"
+            ]
+          },
+          "type": "Compose",
+          "inputs": "@{outputs('Get_project')?['body']?['field_1']} status report @{formatDateTime(convertFromUtc(utcNow(), 'Pacific Standard Time'), 'yyyy-MM-dd HHmm')}"
+        },
+        "Create_HTML_file": {
+          "runAfter": {
+            "Report_name": [
+              "Succeeded"
+            ]
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_onedriveforbusiness",
+              "connectionName": "shared_onedriveforbusiness",
+              "operationId": "CreateFile"
+            },
+            "parameters": {
+              "folderPath": "/PMO Reports",
+              "name": "@{outputs('Report_name')}.html",
+              "body": "@outputs('Report_HTML')"
+            },
+            "authentication": {
+              "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']",
+              "type": "Raw"
+            }
+          },
+          "runtimeConfiguration": {
+            "contentTransfer": {
+              "transferMode": "Chunked"
+            }
+          }
+        },
+        "Convert_to_PDF": {
+          "runAfter": {
+            "Create_HTML_file": [
+              "Succeeded"
+            ]
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_onedriveforbusiness",
+              "connectionName": "shared_onedriveforbusiness",
+              "operationId": "ConvertFile"
+            },
+            "parameters": {
+              "id": "@body('Create_HTML_file')?['Id']",
+              "type": "PDF"
+            },
+            "authentication": {
+              "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']",
+              "type": "Raw"
+            }
+          }
+        },
+        "Save_PDF_to_team_site": {
+          "runAfter": {
+            "Convert_to_PDF": [
+              "Succeeded"
+            ]
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline",
+              "connectionName": "shared_sharepointonline",
+              "operationId": "CreateFile"
+            },
+            "parameters": {
+              "dataset": "https://contoso.sharepoint.com/sites/SystemsRedesignDemo",
+              "folderPath": "/Shared Documents/General",
+              "name": "@{outputs('Report_name')}.pdf",
+              "body": "@body('Convert_to_PDF')"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Respond_to_the_app": {
+          "runAfter": {
+            "Save_PDF_to_team_site": [
+              "Succeeded"
+            ]
+          },
+          "type": "Response",
+          "kind": "PowerApp",
+          "inputs": {
+            "statusCode": 200,
+            "body": {
+              "reporturl": "@{concat('https://contoso.sharepoint.com/sites/SystemsRedesignDemo/Shared%20Documents/Forms/AllItems.aspx?id=', uriComponent(concat('/sites/SystemsRedesignDemo/Shared Documents/General/', outputs('Report_name'), '.pdf')), '&parent=', uriComponent('/sites/SystemsRedesignDemo/Shared Documents/General'))}"
+            },
+            "schema": {
+              "type": "object",
+              "properties": {
+                "reporturl": {
+                  "title": "reporturl",
+                  "x-ms-dynamically-added": true,
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "Delete_temp_HTML": {
+          "runAfter": {
+            "Respond_to_the_app": [
+              "Succeeded"
+            ]
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_onedriveforbusiness",
+              "connectionName": "shared_onedriveforbusiness",
+              "operationId": "DeleteFile"
+            },
+            "parameters": {
+              "id": "@body('Create_HTML_file')?['Id']"
+            },
+            "authentication": {
+              "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']",
+              "type": "Raw"
+            }
+          }
+        }
+      }
+    },
+    "templateName": null
+  },
+  "schemaVersion": "1.0.0.0"
+}

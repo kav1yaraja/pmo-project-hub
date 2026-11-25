@@ -1,0 +1,19 @@
+Title,ProjectID,Likelihood,Impact,RiskScore,Mitigation,Owner,Status
+Lunch coverage depends on two part-time pharmacists,1,3,4,12,Cross-train one pharmacy tech per shift,Kaviya Raja,Open
+Text-when-ready vendor approval may slip,1,2,3,6,Pilot with existing VEText messaging,Kaviya Raja,Mitigated
+Veterans without cell phones miss text reminders,2,3,3,9,Keep phone-call reminders for landline-only Veterans,Priya Natarajan,Open
+Scheduling grid changes need union notice,2,2,2,4,Notified 30 days ahead,Priya Natarajan,Closed
+Community care network has too few local specialists,3,4,5,20,Escalate to VISN network office; track by specialty,Taylor Brooks,Open
+Two scheduler vacancies,3,4,4,16,Borrow schedulers from HAS for 60 days,Taylor Brooks,Open
+Consult data has duplicates,3,3,3,9,Weekly data cleanup with Analytics,Taylor Brooks,Mitigated
+Same-day slots get used for routine visits,4,3,3,9,Protect 4 slots daily in the grid,Drew Ramirez,Mitigated
+Translated templates need clinical review,5,3,4,12,Patient Education Committee review on 12/2,Kaviya Raja,Open
+Printer on 4 West lacks Spanish characters,5,2,2,4,OIT ticket placed,Kaviya Raja,Open
+Sterile trays arrive incomplete,6,4,5,20,Tray count check added to SPS workflow,Morgan Lee,Open
+Anesthesia staffing at 7:30 start,6,4,4,16,Proposal to Chief of Staff for staggered start,Morgan Lee,Open
+Surgeon buy-in for earlier pre-op,6,3,3,9,Share on-time data at surgery M&M,Morgan Lee,Open
+Standby Veterans not reachable on short notice,7,2,3,6,Collect preferred contact time at sign-up,Quinn Harper,Mitigated
+Each service wants its own checklist items,8,3,3,9,Core checklist plus one service-specific section,Kaviya Raja,Open
+"IT access steps owned by OIT, outside the facility",8,3,4,12,Monthly check-in with OIT site lead,Kaviya Raja,Open
+Chairs not returned from inpatient units,9,3,3,9,Return stations on every unit,Casey Morgan,Closed
+PAR levels drift after reset,10,2,3,6,Quarterly PAR review on the ICU huddle board,Riley Chen,Closed
